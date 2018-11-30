@@ -3,18 +3,19 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { suggest } from '../actions';
+import './EntityDetails.css';
 
 import { actions as lightboxActions } from 'core/lightbox';
 import * as locales from 'core/locales';
 import * as navigation from 'core/navigation';
 import * as plural from 'core/plural';
 import * as entitieslist from 'modules/entitieslist';
-import { History } from 'modules/history';
 
+import { suggest } from '../actions';
 import { selectors } from '..';
 import Editor from './Editor';
 import Metadata from './Metadata';
+import Tools from './Tools';
 
 import type { DbEntity } from 'modules/entitieslist';
 import type { Locale } from 'core/locales';
@@ -89,7 +90,7 @@ export class EntityDetailsBase extends React.Component<InternalProps, State> {
                 pluralForm= { state.pluralForm }
                 sendSuggestion={ this.sendSuggestion }
             />
-            <History />
+            <Tools />
         </section>;
     }
 }
