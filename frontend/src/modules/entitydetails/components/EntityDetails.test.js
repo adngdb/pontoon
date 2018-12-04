@@ -23,11 +23,19 @@ const NAVIGATION = {
 const PARAMETERS = {
     pluralForm: 0,
 };
+const HISTORY = {
+    translations: [],
+};
+const LOCALES = {
+    translations: [],
+};
 
 
 function createShallowEntityDetails(selectedEntity = SELECTED_ENTITY) {
     return shallow(<EntityDetailsBase
         activeTranslation={ TRANSLATION }
+        history={ HISTORY }
+        otherlocales={ LOCALES }
         navigation={ NAVIGATION }
         selectedEntity={ selectedEntity }
         parameters={ PARAMETERS }
