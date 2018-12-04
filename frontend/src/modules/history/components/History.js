@@ -8,10 +8,12 @@ import './History.css';
 
 import { selectors as navSelectors } from 'core/navigation';
 import * as plural from 'core/plural';
+import { NAME as USER_NAME } from 'core/user';
+import type { UserState } from 'core/user';
 
 import Translation from './Translation';
 import { actions, NAME } from '..';
-import type { HistoryState } from '../reducer';
+import type { DBTranslation, HistoryState } from '../reducer';
 
 import type { Navigation } from 'core/navigation';
 
@@ -20,6 +22,7 @@ type Props = {|
     history: HistoryState,
     parameters: Navigation,
     pluralForm: number,
+    user: UserState,
 |};
 
 type InternalProps = {|
@@ -38,6 +41,7 @@ export class HistoryBase extends React.Component<InternalProps> {
 
         // This is a newly selected entity, remove the previous history
         // then fetch the history of the new entity.
+        dispatch(actions.reset());
         dispatch(actions.get(
             parameters.entity,
             parameters.locale,
@@ -58,6 +62,18 @@ export class HistoryBase extends React.Component<InternalProps> {
         }
     }
 
+    updateTranslationStatus = (translation: DBTranslation, change: string) => {
+        const { parameters, pluralForm, dispatch } = this.props;
+        dispatch(actions.updateStatus(
+            change,
+            parameters.entity,
+            parameters.locale,
+            parameters.resource,
+            pluralForm,
+            translation.pk,
+        ));
+    }
+
     renderNoResults() {
         return <section className="history">
             <Localized id="history-history-no-translations">
@@ -67,20 +83,31 @@ export class HistoryBase extends React.Component<InternalProps> {
     }
 
     render() {
-        const { history } = this.props;
-
-        if (history.fetching) {
-            return null;
-        }
+        const { history, parameters, user } = this.props;
 
         if (!history.translations.length) {
+            if (history.fetching) {
+                return null;
+            }
+
             return this.renderNoResults();
         }
+
+        const canReview = (
+            user.translatorForLocales &&
+            user.translatorForLocales.includes(parameters.locale)
+        );
 
         return <section className="history">
             <ul>
                 { history.translations.map((translation, key) => {
-                    return <Translation translation={ translation } key={ key } />;
+                    return <Translation
+                        translation={ translation }
+                        canReview={ canReview }
+                        user={ user }
+                        updateTranslationStatus={ this.updateTranslationStatus }
+                        key={ key }
+                    />;
                 }) }
             </ul>
         </section>;
@@ -93,6 +120,7 @@ const mapStateToProps = (state: Object): Props => {
         history: state[NAME],
         parameters: navSelectors.getNavigation(state),
         pluralForm: plural.selectors.getPluralForm(state),
+        user: state[USER_NAME],
     };
 };
 

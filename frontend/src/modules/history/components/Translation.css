@@ -1,6 +1,5 @@
 .translation {
     border-bottom: 1px solid #5E6475;
-    cursor: pointer;
     padding: 5px 10px 20px 10px;
     transition: all 0.1s ease-out;
 }
@@ -61,10 +60,10 @@
     width: 22px;
 }
 
-.translation > header.translator button,
-.translation > header.own button.reject,
-.translation > header.own button.unreject,
-.translation.approved > header button.approve {
+.translation.can-approve header button.approve,
+.translation.can-approve header button.unapprove,
+.translation.can-reject header button.reject,
+.translation.can-reject header button.unreject {
     pointer-events: auto;
     opacity: 1;
 }

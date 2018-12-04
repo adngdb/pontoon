@@ -351,6 +351,87 @@ def get_translation_history(request):
 @utils.require_AJAX
 @login_required(redirect_field_name='', login_url='/403')
 @transaction.atomic
+def approve_translation(request):
+    """Approve given translation."""
+    try:
+        t = request.POST['translation']
+        paths = request.POST.getlist('paths[]')
+    except MultiValueDictKeyError as e:
+        return HttpResponseBadRequest('Bad Request: {error}'.format(error=e))
+
+    translation = get_object_or_404(Translation, pk=t)
+    project = translation.entity.resource.project
+    locale = translation.locale
+    user = request.user
+
+    # Read-only translations cannot be approved
+    if utils.readonly_exists(project, locale):
+        return HttpResponseForbidden(
+            "Forbidden: This translation is in read-only mode"
+        )
+
+    if translation.approved:
+        return HttpResponseForbidden(
+            "Forbidden: This translation is already approved"
+        )
+
+    # Only privileged users can approve translations
+    if not user.can_translate(locale, project):
+        return HttpResponseForbidden(
+            "Forbidden: You don't have permission to approve this translation."
+        )
+
+    # Check for errors.
+    # Checks are disabled for the tutorial.
+    use_checks = project.slug != 'tutorial'
+
+    if use_checks and translation.errors.exists():
+        return HttpResponseForbidden(
+            "Forbidden: This translation has errors."
+        )
+
+    now = timezone.now()
+
+    # Reject previously approved translations.
+    translations = Translation.objects.filter(
+        entity=translation.entity,
+        locale=locale,
+        plural_form=translation.plural_form,
+    )
+    translations.filter(approved=True).update(
+        active=False,
+        approved=False,
+        rejected=True,
+        rejected_user=user,
+        rejected_date=now,
+    )
+
+    # Make sure there is no other active translation.
+    translations.filter(active=True).update(active=False)
+
+    # Update the translation status and save it.
+    translation.active = True
+    translation.approved = True
+    translation.approved_user = user
+    translation.approved_date = now
+    translation.unapproved_user = None
+    translation.unapproved_date = None
+    translation.fuzzy = False
+    translation.rejected = False
+    translation.rejected_user = None
+    translation.rejected_date = None
+
+    translation.save()
+
+    return JsonResponse({
+        'translation': translation.serialize(),
+        'stats': TranslatedResource.objects.stats(project, paths, locale),
+    })
+
+
+@utils.require_AJAX
+@login_required(redirect_field_name='', login_url='/403')
+@transaction.atomic
 def unapprove_translation(request):
     """Unapprove given translation."""
     try:
@@ -525,8 +606,14 @@ def perform_checks(request):
 @login_required(redirect_field_name='', login_url='/403')
 @transaction.atomic
 def update_translation(request):
-    """Update entity translation for the specified locale and user."""
+    """Update entity translation for the specified locale and user.
 
+    Note that this view is also used to approve a translation by the old
+    Translate app. Once we migrate to Translate.Next, we'll want to rework
+    this view to remove the bits about approving a translation, because that
+    has been delegated to the `approve_translation` view.
+
+    """
     try:
         entity = request.POST['entity']
         string = request.POST['translation']
@@ -806,8 +893,13 @@ def user_data(request):
         'id': user.id,
         'email': user.email,
         'display_name': user.display_name,
-        'manager_for_locales': list(user.managed_locales.values_list('code', flat=True)),
-        'translator_for_locales': list(user.translated_locales.values_list('code', flat=True)),
+        'username': user.username,
+        'manager_for_locales': list(
+            user.managed_locales.values_list('code', flat=True)
+        ),
+        'translator_for_locales': list(
+            user.translated_locales.values_list('code', flat=True)
+        ),
         'translator_for_projects': user.translated_projects,
     })
 
