@@ -1,5 +1,6 @@
 /* @flow */
 
+import CommentAPI from './comment';
 import EntityAPI from './entity';
 import FilterAPI from './filter';
 import LocaleAPI from './locale';
@@ -24,6 +25,7 @@ export type {
 
 
 export default {
+    comment: new CommentAPI(),
     entity: new EntityAPI(),
     comment: new CommentAPI(),
     filter: new FilterAPI(),

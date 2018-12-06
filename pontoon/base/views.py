@@ -32,6 +32,7 @@ from pontoon.actionlog.utils import log_action
 from pontoon.base import forms
 from pontoon.base import utils
 from pontoon.base.models import (
+    Comment,
     Entity,
     Locale,
     Project,
@@ -649,6 +650,26 @@ def user_data(request):
             "notifications": user.serialized_notifications,
         }
     )
+
+
+@require_POST
+@utils.require_AJAX
+@login_required(redirect_field_name='', login_url='/403')
+@transaction.atomic
+def add_comment(request):
+    try:
+        translation = request.POST['translation']
+        comment = request.POST['comment']
+    except MultiValueDictKeyError as e:
+        return HttpResponseBadRequest('Bad Request: {error}'.format(error=e))
+
+    t = get_object_or_404(Translation, pk=translation)
+    c = Comment(comment=comment, translation=t, user=request.user)
+    c.save()
+
+    return JsonResponse({
+        'type': 'saved',
+    })
 
 
 class AjaxFormView(FormView):
