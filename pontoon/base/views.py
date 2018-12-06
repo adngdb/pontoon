@@ -33,6 +33,7 @@ from django.views.generic.edit import FormView
 from pontoon.base import forms
 from pontoon.base import utils
 from pontoon.base.models import (
+    Comment,
     Entity,
     Locale,
     Project,
