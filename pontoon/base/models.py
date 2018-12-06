@@ -3294,3 +3294,10 @@ class TranslatedResource(AggregatedStats):
                 strings_with_warnings_diff,
                 unreviewed_strings_diff,
             )
+
+
+class Comment(models.Model):
+    translation = models.ForeignKey(Translation, related_name='comments')
+    user = models.ForeignKey(User)
+    comment = models.TextField()
+    date = models.DateTimeField(default=timezone.now)
