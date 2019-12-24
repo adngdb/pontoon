@@ -3,7 +3,7 @@
 export { default as actions } from './actions';
 export { default as reducer } from './reducer';
 
-export { default as ReviewListPage } from './components/ReviewListPage';
+export { default as ReviewList } from './components/ReviewList';
 export { default as ReviewPage } from './components/ReviewPage';
 
 
