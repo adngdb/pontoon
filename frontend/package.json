@@ -53,7 +53,7 @@
     "eject": "react-scripts eject",
     "flow": "flow",
     "flow:dev": "flow stop; flow start; chokidar .flowconfig flow/ src/ tests/ -i flow/logs/flow.log -c 'flow status' --initial",
-    "pretty": "prettier --write  'src/**/*.js'"
+    "pretty": "prettier --write  'src/**/*'"
   },
   "devDependencies": {
     "chokidar-cli": "2.1.0",
