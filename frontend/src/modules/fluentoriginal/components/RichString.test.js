@@ -4,7 +4,6 @@ import sinon from 'sinon';
 
 import RichString from './RichString';
 
-
 const ORIGINAL = `
 song-title = Hello
     .genre = Pop
@@ -16,20 +15,48 @@ const ENTITY = {
 
 describe('<RichString>', () => {
     it('renders value and each attribute correctly', () => {
-        const wrapper = shallow(<RichString
-            entity = { ENTITY }
-        />);
+        const wrapper = shallow(<RichString entity={ENTITY} />);
 
         expect(wrapper.find('ContentMarker')).toHaveLength(3);
 
-        expect(wrapper.find('label').at(0).html()).toContain('Value');
-        expect(wrapper.find('ContentMarker').at(0).html()).toContain('Hello');
+        expect(
+            wrapper
+                .find('label')
+                .at(0)
+                .html(),
+        ).toContain('Value');
+        expect(
+            wrapper
+                .find('ContentMarker')
+                .at(0)
+                .html(),
+        ).toContain('Hello');
 
-        expect(wrapper.find('label').at(1).html()).toContain('genre');
-        expect(wrapper.find('ContentMarker').at(1).html()).toContain('Pop');
+        expect(
+            wrapper
+                .find('label')
+                .at(1)
+                .html(),
+        ).toContain('genre');
+        expect(
+            wrapper
+                .find('ContentMarker')
+                .at(1)
+                .html(),
+        ).toContain('Pop');
 
-        expect(wrapper.find('label').at(2).html()).toContain('album');
-        expect(wrapper.find('ContentMarker').at(2).html()).toContain('Hello and Good Bye');
+        expect(
+            wrapper
+                .find('label')
+                .at(2)
+                .html(),
+        ).toContain('album');
+        expect(
+            wrapper
+                .find('ContentMarker')
+                .at(2)
+                .html(),
+        ).toContain('Hello and Good Bye');
     });
 
     it('renders select expression correctly', () => {
@@ -44,25 +71,45 @@ user-entry =
             original: input,
         };
 
-        const wrapper = shallow(<RichString
-            entity = { entity }
-        />);
+        const wrapper = shallow(<RichString entity={entity} />);
 
         expect(wrapper.find('ContentMarker')).toHaveLength(2);
 
-        expect(wrapper.find('label').at(0).html()).toContain('variant-1');
-        expect(wrapper.find('ContentMarker').at(0).html()).toContain('Hello!');
+        expect(
+            wrapper
+                .find('label')
+                .at(0)
+                .html(),
+        ).toContain('variant-1');
+        expect(
+            wrapper
+                .find('ContentMarker')
+                .at(0)
+                .html(),
+        ).toContain('Hello!');
 
-        expect(wrapper.find('label').at(1).html()).toContain('variant-2');
-        expect(wrapper.find('ContentMarker').at(1).html()).toContain('Good Bye!');
+        expect(
+            wrapper
+                .find('label')
+                .at(1)
+                .html(),
+        ).toContain('variant-2');
+        expect(
+            wrapper
+                .find('ContentMarker')
+                .at(1)
+                .html(),
+        ).toContain('Good Bye!');
     });
 
     it('calls the handleClickOnPlaceable function on click on .original', () => {
         const handleClickOnPlaceable = sinon.spy();
-        const wrapper = shallow(<RichString
-            entity = { ENTITY }
-            handleClickOnPlaceable={ handleClickOnPlaceable }
-        />);
+        const wrapper = shallow(
+            <RichString
+                entity={ENTITY}
+                handleClickOnPlaceable={handleClickOnPlaceable}
+            />,
+        );
 
         wrapper.find('.original').simulate('click');
         expect(handleClickOnPlaceable.called).toEqual(true);

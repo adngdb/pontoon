@@ -13,7 +13,6 @@ export type EntityTranslation = {|
     +warnings: Array<string>,
 |};
 
-
 /**
  * Comments pertaining to a translation.
  */
@@ -26,7 +25,6 @@ export type TranslationComment = {|
     +content: string,
     +id: number,
 |};
-
 
 /**
  * String that needs to be translated, along with its current metadata,
@@ -49,12 +47,10 @@ export type Entity = {|
     +readonly: boolean,
 |};
 
-
 /**
  * List of Entity objects.
  */
 export type Entities = Array<Entity>;
-
 
 /*
  * A collection of translations of an entity to a locale other than
@@ -64,7 +60,6 @@ export type OtherLocaleTranslations = {|
     +preferred: Array<OtherLocaleTranslation>,
     +other: Array<OtherLocaleTranslation>,
 |};
-
 
 /*
  * Translation of an entity in a locale other than the currently selected locale.
@@ -80,7 +75,6 @@ export type OtherLocaleTranslation = {|
     +translation: string,
 |};
 
-
 /*
  * Translation that comes from a machine (Machine Translation,
  * Translation Memory... ).
@@ -91,8 +85,7 @@ type SourceType =
     | 'microsoft-translator'
     | 'microsoft-terminology'
     | 'transvision'
-    | 'caighdean'
-;
+    | 'caighdean';
 
 export type MachineryTranslation = {|
     sources: Array<SourceType>,

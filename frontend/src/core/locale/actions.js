@@ -2,7 +2,6 @@
 
 import api from 'core/api';
 
-
 export const RECEIVE: 'locale/RECEIVE' = 'locale/RECEIVE';
 export const REQUEST: 'locale/REQUEST' = 'locale/REQUEST';
 
@@ -30,7 +29,6 @@ export type Locale = {|
     +localizations: Array<Localization>,
 |};
 
-
 export type RequestAction = {|
     type: typeof REQUEST,
 |};
@@ -39,7 +37,6 @@ export function request() {
         type: REQUEST,
     };
 }
-
 
 export type ReceiveAction = {|
     type: typeof RECEIVE,
@@ -52,7 +49,6 @@ export function receive(locale: Locale) {
     };
 }
 
-
 export function get(code: string): Function {
     return async dispatch => {
         dispatch(request());
@@ -63,10 +59,10 @@ export function get(code: string): Function {
             ...data,
             direction: data.direction.toLowerCase(),
             cldrPlurals: data.cldrPlurals.split(',').map(i => parseInt(i, 10)),
-        }
+        };
 
         dispatch(receive(locale));
-    }
+    };
 }
 
 export default {

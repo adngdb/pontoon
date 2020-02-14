@@ -4,7 +4,6 @@ import APIBase from './base';
 
 import type { OtherLocaleTranslations } from './types';
 
-
 export default class EntityAPI extends APIBase {
     async batchEdit(
         action: string,
@@ -33,7 +32,12 @@ export default class EntityAPI extends APIBase {
         const headers = new Headers();
         headers.append('X-Requested-With', 'XMLHttpRequest');
 
-        return await this.fetch('/batch-edit-translations/', 'POST', payload, headers);
+        return await this.fetch(
+            '/batch-edit-translations/',
+            'POST',
+            payload,
+            headers,
+        );
     }
 
     /**
@@ -112,11 +116,7 @@ export default class EntityAPI extends APIBase {
         return await this.fetch('/get-entities/', 'POST', payload, headers);
     }
 
-    async getHistory(
-        entity: number,
-        locale: string,
-        pluralForm: number = -1,
-    ) {
+    async getHistory(entity: number, locale: string, pluralForm: number = -1) {
         const payload = new URLSearchParams();
         payload.append('entity', entity.toString());
         payload.append('locale', locale);
@@ -125,7 +125,12 @@ export default class EntityAPI extends APIBase {
         const headers = new Headers();
         headers.append('X-Requested-With', 'XMLHttpRequest');
 
-        const results = await this.fetch('/get-history/', 'GET', payload, headers);
+        const results = await this.fetch(
+            '/get-history/',
+            'GET',
+            payload,
+            headers,
+        );
 
         return this.keysToCamelCase(results);
     }
@@ -141,7 +146,12 @@ export default class EntityAPI extends APIBase {
         const headers = new Headers();
         headers.append('X-Requested-With', 'XMLHttpRequest');
 
-        const results = await this.fetch('/other-locales/', 'GET', payload, headers);
+        const results = await this.fetch(
+            '/other-locales/',
+            'GET',
+            payload,
+            headers,
+        );
 
         if (results.status === false) {
             return null;

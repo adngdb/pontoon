@@ -7,12 +7,12 @@ import { fluent } from 'core/utils';
 
 import type { Entity } from 'core/api';
 
-
 type Props = {|
     +entity: Entity,
-    +handleClickOnPlaceable: (SyntheticMouseEvent<HTMLParagraphElement>) => void,
+    +handleClickOnPlaceable: (
+        SyntheticMouseEvent<HTMLParagraphElement>,
+    ) => void,
 |};
-
 
 /**
  * Show the original string of a Fluent entity as a simple preview.
@@ -20,9 +20,9 @@ type Props = {|
 export default function SimpleString(props: Props) {
     const original = fluent.getSimplePreview(props.entity.original);
 
-    return <p className="original" onClick={ props.handleClickOnPlaceable }>
-        <WithPlaceablesForFluent>
-            { original }
-        </WithPlaceablesForFluent>
-    </p>;
+    return (
+        <p className='original' onClick={props.handleClickOnPlaceable}>
+            <WithPlaceablesForFluent>{original}</WithPlaceablesForFluent>
+        </p>
+    );
 }

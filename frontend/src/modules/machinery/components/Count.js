@@ -4,11 +4,9 @@ import * as React from 'react';
 
 import type { MachineryState } from 'modules/machinery';
 
-
 type Props = {|
     machinery: MachineryState,
 |};
-
 
 export default class Count extends React.Component<Props> {
     render() {
@@ -29,23 +27,21 @@ export default class Count extends React.Component<Props> {
 
         const remainingCount = machineryCount - preferredCount;
 
-        const preferred = (
-            !preferredCount ? null :
-            <span className='preferred'>{ preferredCount }</span>
+        const preferred = !preferredCount ? null : (
+            <span className='preferred'>{preferredCount}</span>
         );
-        const remaining = (
-            !remainingCount ? null :
-            <span>{ remainingCount }</span>
+        const remaining = !remainingCount ? null : (
+            <span>{remainingCount}</span>
         );
-        const plus = (
-            !remainingCount || !preferredCount ? null :
-            <span>{ '+' }</span>
-        );
+        const plus =
+            !remainingCount || !preferredCount ? null : <span>{'+'}</span>;
 
-        return <span className='count'>
-            { preferred }
-            { plus }
-            { remaining }
-        </span>;
+        return (
+            <span className='count'>
+                {preferred}
+                {plus}
+                {remaining}
+            </span>
+        );
     }
 }

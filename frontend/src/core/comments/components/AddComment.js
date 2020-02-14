@@ -5,7 +5,7 @@ import { Localized } from '@fluent/react';
 
 import './AddComment.css';
 
-import { UserAvatar } from 'core/user'
+import { UserAvatar } from 'core/user';
 
 type Props = {|
     user: string,
@@ -15,15 +15,8 @@ type Props = {|
     addComment: (string, number) => void,
 |};
 
-
 export default function AddComments(props: Props) {
-    const {
-        user,
-        username,
-        imageURL,
-        translationId,
-        addComment,
-    } = props;
+    const { user, username, imageURL, translationId, addComment } = props;
 
     const commentInput: any = React.useRef();
     const minRows = 1;
@@ -37,15 +30,16 @@ export default function AddComments(props: Props) {
         const textAreaLineHeight = 24;
         commentInput.current.rows = minRows;
 
-        const currentRows = Math.trunc(commentInput.current.scrollHeight / textAreaLineHeight);
+        const currentRows = Math.trunc(
+            commentInput.current.scrollHeight / textAreaLineHeight,
+        );
 
         if (currentRows < maxRows) {
             commentInput.current.rows = currentRows;
-        }
-        else {
+        } else {
             commentInput.current.rows = maxRows;
         }
-    }
+    };
 
     const submitComment = (event: SyntheticKeyboardEvent<>) => {
         if (event.keyCode === 13 && event.shiftKey === false) {
@@ -62,27 +56,26 @@ export default function AddComments(props: Props) {
         }
     };
 
-    return <div className='comment add-comment'>
-        <UserAvatar
-            username={ username }
-            imageUrl={ imageURL }
-        />
-        <form className='container'>
-            <Localized
-                id='comments-AddComment--input'
-                attrs={{ placeholder: true }}
-            >
-                <textarea
-                    id='comment-input'
-                    name='comment'
-                    dir='auto'
-                    placeholder={ `Write a comment…` }
-                    rows={ minRows }
-                    ref={ commentInput }
-                    onChange={ handleOnChange }
-                    onKeyDown={ submitComment }
-                />
-            </Localized>
-        </form>
-    </div>
+    return (
+        <div className='comment add-comment'>
+            <UserAvatar username={username} imageUrl={imageURL} />
+            <form className='container'>
+                <Localized
+                    id='comments-AddComment--input'
+                    attrs={{ placeholder: true }}
+                >
+                    <textarea
+                        id='comment-input'
+                        name='comment'
+                        dir='auto'
+                        placeholder={`Write a comment…`}
+                        rows={minRows}
+                        ref={commentInput}
+                        onChange={handleOnChange}
+                        onKeyDown={submitComment}
+                    />
+                </Localized>
+            </form>
+        </div>
+    );
 }

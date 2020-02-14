@@ -5,17 +5,18 @@ import shortid from 'shortid';
 import escapeRegExp from 'lodash.escaperegexp';
 import { mark } from 'react-content-marker';
 
-
-export function markSearchTerms(base: string, search: string){
+export function markSearchTerms(base: string, search: string) {
     // Split search string on spaces except if between non-escaped quotes.
     const unusable = '☠';
-    const searchTerms = search.replace(/\\"/g, unusable).match(/[^\s"]+|"[^"]+"/g);
+    const searchTerms = search
+        .replace(/\\"/g, unusable)
+        .match(/[^\s"]+|"[^"]+"/g);
 
     if (searchTerms) {
         const reg = new RegExp(unusable, 'g');
         var i = searchTerms.length;
 
-        while(i--) {
+        while (i--) {
             searchTerms[i] = searchTerms[i].replace(/^["]|["]$/g, '');
             searchTerms[i] = searchTerms[i].replace(reg, '"');
         }
@@ -27,8 +28,11 @@ export function markSearchTerms(base: string, search: string){
 
         for (let searchTerm of searchTerms) {
             const rule = new RegExp(escapeRegExp(searchTerm), 'i');
-            const tag = (x: string) =>
-                <mark className='search' key={ shortid.generate() }>{ x }</mark>;
+            const tag = (x: string) => (
+                <mark className='search' key={shortid.generate()}>
+                    {x}
+                </mark>
+            );
 
             base = mark(base, rule, tag);
         }
@@ -37,18 +41,18 @@ export function markSearchTerms(base: string, search: string){
     return base;
 }
 
-
 type Props = {
     search: string,
 };
 
-
 export default function withSearch<Config: Object>(
-    WrappedComponent: React.AbstractComponent<Config>
+    WrappedComponent: React.AbstractComponent<Config>,
 ): React.AbstractComponent<Config> {
     return function WithSearch(props: { ...Config, ...Props }) {
-        return <WrappedComponent { ...props }>
-            { markSearchTerms(props.children, props.search) }
-        </WrappedComponent>;
+        return (
+            <WrappedComponent {...props}>
+                {markSearchTerms(props.children, props.search)}
+            </WrappedComponent>
+        );
     };
 }

@@ -12,7 +12,6 @@ import type { Locale } from 'core/locale';
 
 import TranslationSource from './TranslationSource';
 
-
 type Props = {|
     isReadOnlyEditor: boolean,
     locale: Locale,
@@ -20,7 +19,6 @@ type Props = {|
     translation: MachineryTranslation,
     updateEditorTranslation: (string, string) => void,
 |};
-
 
 /**
  * Render a Translation in the Machinery tab.
@@ -40,11 +38,19 @@ export default class Translation extends React.Component<Props> {
             return;
         }
 
-        this.props.updateEditorTranslation(this.props.translation.translation, 'machinery');
+        this.props.updateEditorTranslation(
+            this.props.translation.translation,
+            'machinery',
+        );
     };
 
     render() {
-        const { locale, sourceString, translation, isReadOnlyEditor } = this.props;
+        const {
+            locale,
+            sourceString,
+            translation,
+            isReadOnlyEditor,
+        } = this.props;
 
         const types = translation.sources;
 
@@ -55,48 +61,50 @@ export default class Translation extends React.Component<Props> {
             className += ' cannot-copy';
         }
 
-        return <Localized id="machinery-Translation--copy" attrs={{ title: true }}>
-            <li
-                className={ className }
-                title="Copy Into Translation"
-                onClick={ this.copyTranslationIntoEditor }
-            >
-                <header>
-                    { !translation.quality ? null :
-                        <span className="quality">{ translation.quality + '%' }</span>
-                    }
-                    <TranslationSource
-                        translation={ translation }
-                        locale={ locale }
-                    />
-                </header>
-                <p className="original">
-                    { types.indexOf('caighdean') === -1 ?
-                        <GenericTranslation
-                            content={ sourceString }
-                            diffTarget={ translation.original }
-                        />
-                    :
-                        /*
-                         * Caighdean takes `gd` translations as input, so we shouldn't
-                         * diff it against the `en-US` source string.
-                         */
-                         <GenericTranslation
-                             content= { translation.original }
-                         />
-                    }
-                </p>
-                <p
-                    className="suggestion"
-                    dir={ locale.direction }
-                    data-script={ locale.script }
-                    lang={ locale.code }
+        return (
+            <Localized id='machinery-Translation--copy' attrs={{ title: true }}>
+                <li
+                    className={className}
+                    title='Copy Into Translation'
+                    onClick={this.copyTranslationIntoEditor}
                 >
-                    <GenericTranslation
-                        content={ translation.translation }
-                    />
-                </p>
-            </li>
-        </Localized>;
+                    <header>
+                        {!translation.quality ? null : (
+                            <span className='quality'>
+                                {translation.quality + '%'}
+                            </span>
+                        )}
+                        <TranslationSource
+                            translation={translation}
+                            locale={locale}
+                        />
+                    </header>
+                    <p className='original'>
+                        {types.indexOf('caighdean') === -1 ? (
+                            <GenericTranslation
+                                content={sourceString}
+                                diffTarget={translation.original}
+                            />
+                        ) : (
+                            /*
+                             * Caighdean takes `gd` translations as input, so we shouldn't
+                             * diff it against the `en-US` source string.
+                             */
+                            <GenericTranslation
+                                content={translation.original}
+                            />
+                        )}
+                    </p>
+                    <p
+                        className='suggestion'
+                        dir={locale.direction}
+                        data-script={locale.script}
+                        lang={locale.code}
+                    >
+                        <GenericTranslation content={translation.translation} />
+                    </p>
+                </li>
+            </Localized>
+        );
     }
 }

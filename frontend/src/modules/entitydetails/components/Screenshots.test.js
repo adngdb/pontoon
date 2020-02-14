@@ -4,15 +4,15 @@ import sinon from 'sinon';
 
 import Screenshots from './Screenshots';
 
-
 function createShallowScreenshots(source, openLightboxFake = null) {
-    return shallow(<Screenshots
-        source={ source }
-        locale="kg"
-        openLightbox={ openLightboxFake }
-    />);
+    return shallow(
+        <Screenshots
+            source={source}
+            locale='kg'
+            openLightbox={openLightboxFake}
+        />,
+    );
 }
-
 
 describe('<Screenshots>', () => {
     it('renders an image when there is an image URL in the source', () => {
@@ -38,13 +38,14 @@ describe('<Screenshots>', () => {
 
         const images = wrapper.find('img');
         expect(images).toHaveLength(2);
-        images.forEach((node) => {
+        images.forEach(node => {
             expect(node.props().src).toEqual(expectedImages.shift());
         });
     });
 
     it('does not render non PNG or JPG images', () => {
-        const source = 'That is a non-supported image URL: http://link.to/image.bmp';
+        const source =
+            'That is a non-supported image URL: http://link.to/image.bmp';
         const wrapper = createShallowScreenshots(source);
 
         expect(wrapper.find('img')).toHaveLength(0);

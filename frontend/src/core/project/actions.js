@@ -2,10 +2,8 @@
 
 import api from 'core/api';
 
-
 export const RECEIVE: 'project/RECEIVE' = 'project/RECEIVE';
 export const REQUEST: 'project/REQUEST' = 'project/REQUEST';
-
 
 export type Tag = {|
     +slug: string,
@@ -13,14 +11,12 @@ export type Tag = {|
     +priority: number,
 |};
 
-
 type Project = {
     slug: string,
     name: string,
     info: string,
     tags: Array<Tag>,
 };
-
 
 /**
  * Notify that project data is being fetched.
@@ -33,7 +29,6 @@ export function request(): RequestAction {
         type: REQUEST,
     };
 }
-
 
 /**
  * Receive project data.
@@ -55,7 +50,6 @@ export function receive(project: Project): ReceiveAction {
     };
 }
 
-
 /**
  * Get data about the current project.
  */
@@ -68,9 +62,8 @@ export function get(slug: string): Function {
         dispatch(request());
         const results = await api.project.get(slug);
         dispatch(receive(results.data.project));
-    }
+    };
 }
-
 
 export default {
     get,

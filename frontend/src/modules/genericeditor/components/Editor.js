@@ -9,7 +9,6 @@ import GenericTranslationForm from './GenericTranslationForm';
 
 import type { EditorProps } from 'core/editor';
 
-
 export class EditorBase extends React.Component<EditorProps> {
     componentDidMount() {
         this.props.updateTranslation(this.props.activeTranslationString, true);
@@ -30,7 +29,7 @@ export class EditorBase extends React.Component<EditorProps> {
         const props = this.props;
 
         // Because Flow.
-        if (typeof(props.editor.translation) !== 'string') {
+        if (typeof props.editor.translation !== 'string') {
             return null;
         }
 
@@ -39,23 +38,29 @@ export class EditorBase extends React.Component<EditorProps> {
             return null;
         }
 
-        const original = (props.pluralForm <= 0) ? props.entity.original : props.entity.original_plural;
+        const original =
+            props.pluralForm <= 0
+                ? props.entity.original
+                : props.entity.original_plural;
 
-        return <>
-            <plural.PluralSelector />
-            <GenericTranslationForm { ...props } />
-            <editor.EditorMenu
-                { ...props }
-                translationLengthHook={ <editor.TranslationLength
-                    comment={ props.entity.comment }
-                    format={ props.entity.format }
-                    original={ original }
-                    translation={ props.editor.translation }
-                /> }
-            />
-        </>;
+        return (
+            <>
+                <plural.PluralSelector />
+                <GenericTranslationForm {...props} />
+                <editor.EditorMenu
+                    {...props}
+                    translationLengthHook={
+                        <editor.TranslationLength
+                            comment={props.entity.comment}
+                            format={props.entity.format}
+                            original={original}
+                            translation={props.editor.translation}
+                        />
+                    }
+                />
+            </>
+        );
     }
 }
-
 
 export default editor.connectedEditor(EditorBase);

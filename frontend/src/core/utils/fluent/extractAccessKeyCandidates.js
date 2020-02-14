@@ -4,7 +4,6 @@ import flattenDeep from 'lodash.flattendeep';
 
 import type { FluentMessage, PatternElement } from './types';
 
-
 /**
  * Returns a flat list of Text Elements, either standalone or from SelectExpression variants
  */
@@ -16,7 +15,8 @@ function getTextElementsRecursivelly(elements: Array<PatternElement>) {
 
         if (
             element.type === 'Placeable' &&
-            element.expression && element.expression.type === 'SelectExpression'
+            element.expression &&
+            element.expression.type === 'SelectExpression'
         ) {
             return element.expression.variants.map(variant => {
                 return getTextElementsRecursivelly(variant.value.elements);
@@ -39,7 +39,9 @@ function getTextElementsRecursivelly(elements: Array<PatternElement>) {
  * @param {FluentMessage} message A (flat) Fluent message to extract access key candidates from.
  * @returns {?Array<string>} A list of access key candidates.
  */
-export default function extractAccessKeyCandidates(message: FluentMessage): ?Array<string> {
+export default function extractAccessKeyCandidates(
+    message: FluentMessage,
+): ?Array<string> {
     // If message has no attributes, return null
     if (!message.attributes) {
         return null;
@@ -55,9 +57,10 @@ export default function extractAccessKeyCandidates(message: FluentMessage): ?Arr
     // Generate access key candidates from the 'label' attribute or the message value
     let source = null;
     if (message.attributes && attributeIDs.indexOf('label') !== -1) {
-        source = message.attributes.find(attribute => attribute.id.name === 'label');
-    }
-    else if (message.value) {
+        source = message.attributes.find(
+            attribute => attribute.id.name === 'label',
+        );
+    } else if (message.value) {
         source = message;
     }
 
@@ -71,14 +74,12 @@ export default function extractAccessKeyCandidates(message: FluentMessage): ?Arr
     // Collect values of TextElements
     const values = textElements.map(element => {
         let value = '';
-        if (element && typeof(element.value) === 'string') {
-            value = (
-                element.value
+        if (element && typeof element.value === 'string') {
+            value = element.value
                 // Exclude placeables (message is flat). See bug 1447103 for details.
                 .replace(/{[^}]*}/g, '')
                 // Exclude whitespace
-                .replace(/\s/g, '')
-            )
+                .replace(/\s/g, '');
         }
         return value;
     });

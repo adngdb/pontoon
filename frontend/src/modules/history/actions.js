@@ -14,25 +14,20 @@ import { actions as statsActions } from 'core/stats';
 import type { Entity } from 'core/api';
 import type { Locale } from 'core/locale';
 
-
 export const RECEIVE: 'history/RECEIVE' = 'history/RECEIVE';
 export const REQUEST: 'history/REQUEST' = 'history/REQUEST';
 export const UPDATE: 'history/UPDATE' = 'history/UPDATE';
-
 
 export type ReceiveAction = {|
     +type: typeof RECEIVE,
     +translations: Array<Object>,
 |};
-export function receive(
-    translations: Array<Object>,
-): ReceiveAction {
+export function receive(translations: Array<Object>): ReceiveAction {
     return {
         type: RECEIVE,
         translations,
     };
 }
-
 
 export type UpdateAction = {|
     +type: typeof UPDATE,
@@ -45,16 +40,12 @@ export function update(translation: Object) {
     };
 }
 
-
 export type RequestAction = {|
     +type: typeof REQUEST,
     +entity: number,
     +pluralForm: number,
 |};
-export function request(
-    entity: number,
-    pluralForm: number,
-): RequestAction {
+export function request(entity: number, pluralForm: number): RequestAction {
     return {
         type: REQUEST,
         entity,
@@ -62,17 +53,19 @@ export function request(
     };
 }
 
-
-export function get(entity: number, locale: string, pluralForm: number): Function {
+export function get(
+    entity: number,
+    locale: string,
+    pluralForm: number,
+): Function {
     return async dispatch => {
         // Abort all previously running requests.
         await api.entity.abort();
 
         const content = await api.entity.getHistory(entity, locale, pluralForm);
         dispatch(receive(content));
-    }
+    };
 }
-
 
 export type ChangeOperation = 'approve' | 'unapprove' | 'reject' | 'unreject';
 
@@ -84,7 +77,11 @@ function updateStatusOnServer(
 ): Promise<Object> {
     switch (change) {
         case 'approve':
-            return api.translation.approve(translation, resource, ignoreWarnings);
+            return api.translation.approve(
+                translation,
+                resource,
+                ignoreWarnings,
+            );
         case 'unapprove':
             return api.translation.unapprove(translation, resource);
         case 'reject':
@@ -95,7 +92,6 @@ function updateStatusOnServer(
             throw new Error('Unexpected translation status change: ' + change);
     }
 }
-
 
 function _getOperationNotif(change: ChangeOperation, success: boolean) {
     if (success) {
@@ -109,10 +105,11 @@ function _getOperationNotif(change: ChangeOperation, success: boolean) {
             case 'unreject':
                 return notification.messages.TRANSLATION_UNREJECTED;
             default:
-                throw new Error('Unexpected translation status change: ' + change);
+                throw new Error(
+                    'Unexpected translation status change: ' + change,
+                );
         }
-    }
-    else {
+    } else {
         switch (change) {
             case 'approve':
                 return notification.messages.UNABLE_TO_APPROVE_TRANSLATION;
@@ -123,11 +120,12 @@ function _getOperationNotif(change: ChangeOperation, success: boolean) {
             case 'unreject':
                 return notification.messages.UNABLE_TO_UNREJECT_TRANSLATION;
             default:
-                throw new Error('Unexpected translation status change: ' + change);
+                throw new Error(
+                    'Unexpected translation status change: ' + change,
+                );
         }
     }
 }
-
 
 export function updateStatus(
     change: ChangeOperation,
@@ -144,15 +142,22 @@ export function updateStatus(
         NProgress.start();
 
         const results = await updateStatusOnServer(
-            change, translation, resource, ignoreWarnings
+            change,
+            translation,
+            resource,
+            ignoreWarnings,
         );
 
         // Update the UI based on the response.
         if (results.failedChecks) {
             dispatch(editorActions.update(results.string, 'external'));
-            dispatch(editorActions.updateFailedChecks(results.failedChecks, translation));
-        }
-        else {
+            dispatch(
+                editorActions.updateFailedChecks(
+                    results.failedChecks,
+                    translation,
+                ),
+            );
+        } else {
             // Show a notification to explain what happened.
             const notif = _getOperationNotif(change, !!results.translation);
             dispatch(notification.actions.add(notif));
@@ -167,8 +172,7 @@ export function updateStatus(
                     pluralForm,
                     locale,
                 );
-            }
-            else {
+            } else {
                 dispatch(get(entity.pk, locale.code, pluralForm));
             }
         }
@@ -183,7 +187,7 @@ export function updateStatus(
                     entity.path,
                     results.stats.approved,
                     results.stats.warnings,
-                )
+                ),
             );
         }
 
@@ -194,14 +198,13 @@ export function updateStatus(
                     entity.pk,
                     pluralForm,
                     results.translation,
-                )
+                ),
             );
         }
 
         NProgress.done();
-    }
+    };
 }
-
 
 export function deleteTranslation(
     entity: number,
@@ -215,17 +218,22 @@ export function deleteTranslation(
         const results = await api.translation.delete(translation);
 
         if (results.status) {
-            dispatch(notification.actions.add(notification.messages.TRANSLATION_DELETED));
+            dispatch(
+                notification.actions.add(
+                    notification.messages.TRANSLATION_DELETED,
+                ),
+            );
             dispatch(get(entity, locale, pluralForm));
-        }
-        else {
-            dispatch(notification.actions.add(
-                notification.messages.UNABLE_TO_DELETE_TRANSLATION
-            ));
+        } else {
+            dispatch(
+                notification.actions.add(
+                    notification.messages.UNABLE_TO_DELETE_TRANSLATION,
+                ),
+            );
         }
 
         NProgress.done();
-    }
+    };
 }
 
 export function addComment(
@@ -244,7 +252,7 @@ export function addComment(
         dispatch(get(entity, locale, pluralForm));
 
         NProgress.done();
-    }
+    };
 }
 
 export default {

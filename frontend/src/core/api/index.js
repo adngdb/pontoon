@@ -11,7 +11,6 @@ import TranslationAPI from './translation';
 import UserAPI from './user';
 import CommentAPI from './comment';
 
-
 export type {
     Entities,
     Entity,
@@ -21,7 +20,6 @@ export type {
     OtherLocaleTranslations,
     OtherLocaleTranslation,
 } from './types';
-
 
 export default {
     entity: new EntityAPI(),

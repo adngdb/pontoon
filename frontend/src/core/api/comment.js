@@ -2,7 +2,6 @@
 
 import APIBase from './base';
 
-
 export default class CommentAPI extends APIBase {
     add(comment: string, translationId: number) {
         const payload = new URLSearchParams();

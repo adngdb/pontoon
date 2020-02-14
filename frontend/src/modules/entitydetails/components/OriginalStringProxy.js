@@ -9,14 +9,14 @@ import GenericOriginalString from './GenericOriginalString';
 import type { Entity } from 'core/api';
 import type { Locale } from 'core/locale';
 
-
 type Props = {|
     +entity: Entity,
     +locale: Locale,
     +pluralForm: number,
-    +handleClickOnPlaceable: (SyntheticMouseEvent<HTMLParagraphElement>) => void,
+    +handleClickOnPlaceable: (
+        SyntheticMouseEvent<HTMLParagraphElement>,
+    ) => void,
 |};
-
 
 /**
  * Proxy for an OriginalString component based on the format of the entity.
@@ -26,16 +26,20 @@ type Props = {|
  */
 export default function OriginalStringProxy(props: Props) {
     if (props.entity.format === 'ftl') {
-        return <FluentOriginalString
-            entity={ props.entity }
-            handleClickOnPlaceable={ props.handleClickOnPlaceable }
-        />;
+        return (
+            <FluentOriginalString
+                entity={props.entity}
+                handleClickOnPlaceable={props.handleClickOnPlaceable}
+            />
+        );
     }
 
-    return <GenericOriginalString
-        entity={ props.entity }
-        locale={ props.locale }
-        pluralForm={ props.pluralForm }
-        handleClickOnPlaceable={ props.handleClickOnPlaceable }
-    />;
+    return (
+        <GenericOriginalString
+            entity={props.entity}
+            locale={props.locale}
+            pluralForm={props.pluralForm}
+            handleClickOnPlaceable={props.handleClickOnPlaceable}
+        />
+    );
 }

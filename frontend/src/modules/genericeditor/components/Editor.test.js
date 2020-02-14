@@ -4,36 +4,35 @@ import sinon from 'sinon';
 
 import { EditorBase } from './Editor';
 
-
 const ENTITIES = [
     {
         pk: 1,
-        translation: [{
-            string: 'quelque chose',
-        }],
+        translation: [
+            {
+                string: 'quelque chose',
+            },
+        ],
     },
     {
         pk: 2,
-        translation: [
-            { string: 'test' },
-        ],
+        translation: [{ string: 'test' }],
     },
 ];
 
-
 function createEditorBase() {
     const updateTranslationMock = sinon.stub();
-    const wrapper = shallow(<EditorBase
-        editor={ { translation: '' } }
-        pluralForm={ -1 }
-        entity={ ENTITIES[0] }
-        activeTranslationString={ ENTITIES[0].translation[0].string }
-        updateTranslation={ updateTranslationMock }
-    />);
+    const wrapper = shallow(
+        <EditorBase
+            editor={{ translation: '' }}
+            pluralForm={-1}
+            entity={ENTITIES[0]}
+            activeTranslationString={ENTITIES[0].translation[0].string}
+            updateTranslation={updateTranslationMock}
+        />,
+    );
 
     return [wrapper, updateTranslationMock];
 }
-
 
 describe('<Editor>', () => {
     it('updates translation on mount', () => {

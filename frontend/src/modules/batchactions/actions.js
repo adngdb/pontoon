@@ -7,15 +7,14 @@ import { actions as resourceActions } from 'core/resource';
 import { actions as statsActions } from 'core/stats';
 import { actions as historyActions } from 'modules/history';
 
-
 export const CHECK: 'batchactions/CHECK' = 'batchactions/CHECK';
 export const RECEIVE: 'batchactions/RECEIVE' = 'batchactions/RECEIVE';
 export const REQUEST: 'batchactions/REQUEST' = 'batchactions/REQUEST';
 export const RESET: 'batchactions/RESET' = 'batchactions/RESET';
-export const RESET_RESPONSE: 'batchactions/RESET_RESPONSE' = 'batchactions/RESET_RESPONSE';
+export const RESET_RESPONSE: 'batchactions/RESET_RESPONSE' =
+    'batchactions/RESET_RESPONSE';
 export const TOGGLE: 'batchactions/TOGGLE' = 'batchactions/TOGGLE';
 export const UNCHECK: 'batchactions/UNCHECK' = 'batchactions/UNCHECK';
-
 
 export type CheckAction = {|
     type: typeof CHECK,
@@ -32,7 +31,6 @@ export function checkSelection(
         lastCheckedEntity,
     };
 }
-
 
 function updateUI(
     locale: string,
@@ -55,18 +53,18 @@ function updateUI(
             dispatch(statsActions.update(entitiesData.stats));
 
             /*
-            * Update stats in the resource menu.
-            *
-            * TODO: Update stats for all affected resources. ATM that's not possbile,
-            * since the backend only returns stats for the passed resource.
-            */
+             * Update stats in the resource menu.
+             *
+             * TODO: Update stats for all affected resources. ATM that's not possbile,
+             * since the backend only returns stats for the passed resource.
+             */
             if (resource !== 'all-resources') {
                 dispatch(
                     resourceActions.update(
                         resource,
                         entitiesData.stats.approved,
                         entitiesData.stats.warnings,
-                    )
+                    ),
                 );
             }
         }
@@ -79,24 +77,17 @@ function updateUI(
                         entity.pk,
                         pluralForm,
                         translation,
-                    )
+                    ),
                 );
 
                 if (entity.pk === selectedEntity) {
                     dispatch(historyActions.request(entity.pk, pluralForm));
-                    dispatch(
-                        historyActions.get(
-                            entity.pk,
-                            locale,
-                            pluralForm,
-                        )
-                    );
+                    dispatch(historyActions.get(entity.pk, locale, pluralForm));
                 }
             });
         }
-    }
+    };
 }
-
 
 export function performAction(
     action: string,
@@ -127,10 +118,17 @@ export function performAction(
             response.invalidCount = data.invalid_translation_count;
 
             if (data.count > 0) {
-                dispatch(updateUI(locale, project, resource, selectedEntity, entities));
+                dispatch(
+                    updateUI(
+                        locale,
+                        project,
+                        resource,
+                        selectedEntity,
+                        entities,
+                    ),
+                );
             }
-        }
-        else {
+        } else {
             response.error = true;
         }
 
@@ -141,7 +139,6 @@ export function performAction(
         }, 3000);
     };
 }
-
 
 export type ResponseType = {
     action: string,
@@ -161,7 +158,6 @@ export function receive(response: ?ResponseType): ReceiveAction {
     };
 }
 
-
 export type RequestAction = {|
     type: typeof REQUEST,
     source: string,
@@ -173,7 +169,6 @@ export function request(source: string): RequestAction {
     };
 }
 
-
 export type ResetResponseAction = {|
     type: typeof RESET_RESPONSE,
 |};
@@ -183,7 +178,6 @@ export function reset_response(): ResetResponseAction {
     };
 }
 
-
 export type ResetAction = {|
     type: typeof RESET,
 |};
@@ -192,7 +186,6 @@ export function resetSelection(): ResetAction {
         type: RESET,
     };
 }
-
 
 export function selectAll(
     locale: string,
@@ -231,7 +224,6 @@ export function selectAll(
     };
 }
 
-
 export type ToggleAction = {|
     type: typeof TOGGLE,
     entity: number,
@@ -242,7 +234,6 @@ export function toggleSelection(entity: number): ToggleAction {
         entity,
     };
 }
-
 
 export type UncheckAction = {|
     type: typeof UNCHECK,

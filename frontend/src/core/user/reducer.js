@@ -4,12 +4,7 @@ import { UPDATE, UPDATE_SETTINGS } from './actions';
 
 import type { UpdateAction, UpdateSettingsAction } from './actions';
 
-
-type Action =
-    | UpdateAction
-    | UpdateSettingsAction
-;
-
+type Action = UpdateAction | UpdateSettingsAction;
 
 export type SettingsState = {|
     +runQualityChecks: boolean,
@@ -44,7 +39,6 @@ function settings(
     }
 }
 
-
 export type Notification = {|
     +id: number,
     +level: string,
@@ -63,12 +57,10 @@ export type Notification = {|
     },
 |};
 
-
 export type Notifications = {|
     has_unread: boolean,
     notifications: Array<Notification>,
 |};
-
 
 export type UserState = {|
     +isAuthenticated: boolean,

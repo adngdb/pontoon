@@ -4,7 +4,6 @@ import { TextElement, serializeExpression } from '@fluent/syntax';
 
 import type { PatternElement } from './types';
 
-
 /**
  * Return a flattened list of Pattern elements.
  *
@@ -23,7 +22,8 @@ export default function flattenPatternElements(
     elements.forEach(element => {
         if (
             element.type === 'Placeable' &&
-            element.expression && element.expression.type === 'SelectExpression'
+            element.expression &&
+            element.expression.type === 'SelectExpression'
         ) {
             // Before adding SelectExpression merge any collected text fragments into a TextElement
             if (textFragments.length) {
@@ -33,16 +33,19 @@ export default function flattenPatternElements(
 
             // Flatten SelectExpression variant elements
             element.expression.variants.forEach(variant => {
-                variant.value.elements = flattenPatternElements(variant.value.elements);
+                variant.value.elements = flattenPatternElements(
+                    variant.value.elements,
+                );
             });
 
             flatElements.push(element);
-        }
-        else {
-            if (element.type === 'TextElement' && typeof(element.value) === 'string') {
+        } else {
+            if (
+                element.type === 'TextElement' &&
+                typeof element.value === 'string'
+            ) {
                 textFragments.push(element.value);
-            }
-            else {
+            } else {
                 textFragments.push(serializeExpression(element));
             }
         }

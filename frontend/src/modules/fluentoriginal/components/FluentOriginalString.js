@@ -10,12 +10,12 @@ import SourceString from './SourceString';
 
 import type { Entity } from 'core/api';
 
-
 type Props = {|
     +entity: Entity,
-    +handleClickOnPlaceable: (SyntheticMouseEvent<HTMLParagraphElement>) => void,
+    +handleClickOnPlaceable: (
+        SyntheticMouseEvent<HTMLParagraphElement>,
+    ) => void,
 |};
-
 
 /**
  * Show the original string of a Fluent entity.
@@ -28,22 +28,28 @@ export default function FluentOriginalString(props: Props) {
     const syntax = fluent.getSyntaxType(message);
 
     if (syntax === 'simple') {
-        return <SimpleString
-            entity={ props.entity }
-            handleClickOnPlaceable={ props.handleClickOnPlaceable }
-        />;
+        return (
+            <SimpleString
+                entity={props.entity}
+                handleClickOnPlaceable={props.handleClickOnPlaceable}
+            />
+        );
     }
 
     if (syntax === 'rich') {
-        return <RichString
-            entity={ props.entity }
-            handleClickOnPlaceable={ props.handleClickOnPlaceable }
-        />;
+        return (
+            <RichString
+                entity={props.entity}
+                handleClickOnPlaceable={props.handleClickOnPlaceable}
+            />
+        );
     }
 
     // Complex, unsupported strings.
-    return <SourceString
-        entity={ props.entity }
-        handleClickOnPlaceable={ props.handleClickOnPlaceable }
-    />
+    return (
+        <SourceString
+            entity={props.entity}
+            handleClickOnPlaceable={props.handleClickOnPlaceable}
+        />
+    );
 }

@@ -14,15 +14,14 @@ import Screenshots from './Screenshots';
 import type { Entity } from 'core/api';
 import type { Locale } from 'core/locale';
 
-
 type Props = {|
     +entity: Entity,
     +isReadOnlyEditor: boolean,
     +locale: Locale,
     +pluralForm: number,
-    +openLightbox: (string) => void,
-    +addTextToEditorTranslation: (string) => void,
-    +navigateToPath: (string) => void,
+    +openLightbox: string => void,
+    +addTextToEditorTranslation: string => void,
+    +navigateToPath: string => void,
 |};
 
 type State = {|
@@ -71,15 +70,17 @@ export default class Metadata extends React.Component<Props, State> {
             if (e.target.dataset['match']) {
                 this.props.addTextToEditorTranslation(
                     // $FLOW_IGNORE
-                    e.target.dataset['match']
+                    e.target.dataset['match'],
                 );
             }
             // $FLOW_IGNORE
             else if (e.target.childNodes.length) {
-                this.props.addTextToEditorTranslation(e.target.childNodes[0].data);
+                this.props.addTextToEditorTranslation(
+                    e.target.childNodes[0].data,
+                );
             }
         }
-    }
+    };
 
     renderComment(entity: Entity): React.Node {
         if (!entity.comment) {
@@ -95,13 +96,23 @@ export default class Metadata extends React.Component<Props, State> {
             comment = parts.join('\n');
         }
 
-        return <Localized id='entitydetails-Metadata--comment' attrs={ { title: true } }>
-            <Property title='Comment' className='comment'>
-                <Linkify properties={ { target: '_blank', rel: 'noopener noreferrer' } }>
-                    { comment }
-                </Linkify>
-            </Property>
-        </Localized>;
+        return (
+            <Localized
+                id='entitydetails-Metadata--comment'
+                attrs={{ title: true }}
+            >
+                <Property title='Comment' className='comment'>
+                    <Linkify
+                        properties={{
+                            target: '_blank',
+                            rel: 'noopener noreferrer',
+                        }}
+                    >
+                        {comment}
+                    </Linkify>
+                </Property>
+            </Localized>
+        );
     }
 
     renderGroupComment(entity: Entity): React.Node {
@@ -109,13 +120,23 @@ export default class Metadata extends React.Component<Props, State> {
             return null;
         }
 
-        return <Localized id='entitydetails-Metadata--group-comment' attrs={ { title: true } }>
-            <Property title='Group Comment' className='comment'>
-                <Linkify properties={ { target: '_blank', rel: 'noopener noreferrer' } }>
-                    { entity.group_comment }
-                </Linkify>
-            </Property>
-        </Localized>;
+        return (
+            <Localized
+                id='entitydetails-Metadata--group-comment'
+                attrs={{ title: true }}
+            >
+                <Property title='Group Comment' className='comment'>
+                    <Linkify
+                        properties={{
+                            target: '_blank',
+                            rel: 'noopener noreferrer',
+                        }}
+                    >
+                        {entity.group_comment}
+                    </Linkify>
+                </Property>
+            </Localized>
+        );
     }
 
     renderResourceComment(entity: Entity): React.Node {
@@ -126,22 +147,34 @@ export default class Metadata extends React.Component<Props, State> {
             return null;
         }
 
-        let comment = entity.resource_comment
+        let comment = entity.resource_comment;
 
-        return <Localized id='entitydetails-Metadata--resource-comment' attrs={ { title: true } }>
-            <Property title='Resource Comment' className='comment'>
-                <Linkify properties={ { target: '_blank', rel: 'noopener noreferrer' } }>
-                    { comment.length < MAX_LENGTH || seeMore ? comment : comment.slice(0, MAX_LENGTH) + '\u2026' }
-                </Linkify>
-                { comment.length < MAX_LENGTH || seeMore ? null :
-                    <Localized id='entitydetails-Metadata--see-more'>
-                        <button onClick={ this.handleClickOnSeeMore }>
-                            { 'See More' }
-                        </button>
-                    </Localized>
-                }
-            </Property>
-        </Localized>;
+        return (
+            <Localized
+                id='entitydetails-Metadata--resource-comment'
+                attrs={{ title: true }}
+            >
+                <Property title='Resource Comment' className='comment'>
+                    <Linkify
+                        properties={{
+                            target: '_blank',
+                            rel: 'noopener noreferrer',
+                        }}
+                    >
+                        {comment.length < MAX_LENGTH || seeMore
+                            ? comment
+                            : comment.slice(0, MAX_LENGTH) + '\u2026'}
+                    </Linkify>
+                    {comment.length < MAX_LENGTH || seeMore ? null : (
+                        <Localized id='entitydetails-Metadata--see-more'>
+                            <button onClick={this.handleClickOnSeeMore}>
+                                {'See More'}
+                            </button>
+                        </Localized>
+                    )}
+                </Property>
+            </Localized>
+        );
     }
 
     renderContext(entity: Entity): React.Node {
@@ -149,11 +182,16 @@ export default class Metadata extends React.Component<Props, State> {
             return null;
         }
 
-        return <Localized id='entitydetails-Metadata--context' attrs={ { title: true } }>
-            <Property title='Context' className='context'>
-                { entity.key }
-            </Property>
-        </Localized>;
+        return (
+            <Localized
+                id='entitydetails-Metadata--context'
+                attrs={{ title: true }}
+            >
+                <Property title='Context' className='context'>
+                    {entity.key}
+                </Property>
+            </Localized>
+        );
     }
 
     renderSourceArray(source: Array<Array<string>>): React.Node {
@@ -161,9 +199,18 @@ export default class Metadata extends React.Component<Props, State> {
             return null;
         }
 
-        return <ul>{ source.map((value, key) => {
-            return <li key={ key }><span className="title">#:</span>{ value.join(':') }</li>;
-        }) }</ul>;
+        return (
+            <ul>
+                {source.map((value, key) => {
+                    return (
+                        <li key={key}>
+                            <span className='title'>#:</span>
+                            {value.join(':')}
+                        </li>
+                    );
+                })}
+            </ul>
+        );
     }
 
     renderSourceObject(source: Object): React.Node {
@@ -178,13 +225,23 @@ export default class Metadata extends React.Component<Props, State> {
             return null;
         }
 
-        return <Localized id='entitydetails-Metadata--placeholder' attrs={ { title: true } }>
-            <Property title='Placeholder Examples' className='placeholder'>
-                <Linkify properties={ { target: '_blank', rel: 'noopener noreferrer' } }>
-                    { examples.join(', ') }
-                </Linkify>
-            </Property>
-        </Localized>;
+        return (
+            <Localized
+                id='entitydetails-Metadata--placeholder'
+                attrs={{ title: true }}
+            >
+                <Property title='Placeholder Examples' className='placeholder'>
+                    <Linkify
+                        properties={{
+                            target: '_blank',
+                            rel: 'noopener noreferrer',
+                        }}
+                    >
+                        {examples.join(', ')}
+                    </Linkify>
+                </Property>
+            </Localized>
+        );
     }
 
     renderSources(entity: Entity): React.Node {
@@ -204,44 +261,49 @@ export default class Metadata extends React.Component<Props, State> {
 
         const path = event.currentTarget.pathname;
         this.props.navigateToPath(path);
-    }
+    };
 
     render(): React.Node {
         const { entity, locale, openLightbox, pluralForm } = this.props;
 
-        return <div className="metadata">
-            <Screenshots
-                source={ entity.comment }
-                locale={ locale.code }
-                openLightbox={ openLightbox }
-            />
-            <OriginalStringProxy
-                entity={ entity }
-                locale={ locale }
-                pluralForm={ pluralForm }
-                handleClickOnPlaceable={ this.handleClickOnPlaceable }
-            />
-            { this.renderComment(entity) }
-            { this.renderGroupComment(entity) }
-            { this.renderResourceComment(entity) }
-            <FluentAttribute entity={ entity } />
-            { this.renderContext(entity) }
-            { this.renderSources(entity) }
-            <Localized id='entitydetails-Metadata--resource' attrs={ { title: true } }>
-                <Property title='Resource' className='resource'>
-                    <a href={ `/${locale.code}/${entity.project.slug}/` }>
-                        { entity.project.name }
-                    </a>
-                    <span className='divider'>&bull;</span>
-                    <a
-                        href={ `/${locale.code}/${entity.project.slug}/${entity.path}/` }
-                        onClick={ this.navigateToPath }
-                        className='resource-path'
-                    >
-                        { entity.path }
-                    </a>
-                </Property>
-            </Localized>
-        </div>;
+        return (
+            <div className='metadata'>
+                <Screenshots
+                    source={entity.comment}
+                    locale={locale.code}
+                    openLightbox={openLightbox}
+                />
+                <OriginalStringProxy
+                    entity={entity}
+                    locale={locale}
+                    pluralForm={pluralForm}
+                    handleClickOnPlaceable={this.handleClickOnPlaceable}
+                />
+                {this.renderComment(entity)}
+                {this.renderGroupComment(entity)}
+                {this.renderResourceComment(entity)}
+                <FluentAttribute entity={entity} />
+                {this.renderContext(entity)}
+                {this.renderSources(entity)}
+                <Localized
+                    id='entitydetails-Metadata--resource'
+                    attrs={{ title: true }}
+                >
+                    <Property title='Resource' className='resource'>
+                        <a href={`/${locale.code}/${entity.project.slug}/`}>
+                            {entity.project.name}
+                        </a>
+                        <span className='divider'>&bull;</span>
+                        <a
+                            href={`/${locale.code}/${entity.project.slug}/${entity.path}/`}
+                            onClick={this.navigateToPath}
+                            className='resource-path'
+                        >
+                            {entity.path}
+                        </a>
+                    </Property>
+                </Localized>
+            </div>
+        );
     }
 }

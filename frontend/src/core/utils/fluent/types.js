@@ -24,12 +24,14 @@ export type SelectExpression = {
 export type Placeable = {
     type: string,
     expression: SelectExpression,
-}
+};
 
-export type PatternElement = {|
-    type: string,
-    value: string,
-|} | Placeable;
+export type PatternElement =
+    | {|
+          type: string,
+          value: string,
+      |}
+    | Placeable;
 
 export type Pattern = {
     elements: Array<PatternElement>,
@@ -47,9 +49,8 @@ export type FluentMessage = {
     value: Pattern,
     attributes: ?FluentAttributes,
     clone: () => FluentMessage,
-    equals: (any) => boolean,
+    equals: any => boolean,
 };
-
 
 // Type of syntax of the translation to show in the editor.
 // `simple` => SimpleEditor (the message can be simplified to a single text element)

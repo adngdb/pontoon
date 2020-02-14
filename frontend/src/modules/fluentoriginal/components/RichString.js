@@ -16,12 +16,12 @@ import type {
     Pattern,
 } from 'core/utils/fluent/types';
 
-
 type Props = {|
     +entity: Entity,
-    +handleClickOnPlaceable: (SyntheticMouseEvent<HTMLParagraphElement>) => void,
+    +handleClickOnPlaceable: (
+        SyntheticMouseEvent<HTMLParagraphElement>,
+    ) => void,
 |};
-
 
 function renderItem(
     value: string,
@@ -29,20 +29,19 @@ function renderItem(
     key: string,
     className: ?string,
 ): React.Node {
-    return <tr key={ key } className={ className }>
-        <td>
-            <label>{ label }</label>
-        </td>
-        <td>
-            <span>
-                <WithPlaceablesForFluent>
-                    { value }
-                </WithPlaceablesForFluent>
-            </span>
-        </td>
-    </tr>;
+    return (
+        <tr key={key} className={className}>
+            <td>
+                <label>{label}</label>
+            </td>
+            <td>
+                <span>
+                    <WithPlaceablesForFluent>{value}</WithPlaceablesForFluent>
+                </span>
+            </td>
+        </tr>
+    );
 }
-
 
 function renderElements(
     elements: Array<PatternElement>,
@@ -52,38 +51,35 @@ function renderElements(
     return elements.map((element, index) => {
         if (
             element.type === 'Placeable' &&
-            element.expression && element.expression.type === 'SelectExpression'
+            element.expression &&
+            element.expression.type === 'SelectExpression'
         ) {
-            const variantItems = element.expression.variants.map((variant, i) => {
-                if (typeof(variant.value.elements[0].value) !== 'string') {
-                    return null;
-                }
+            const variantItems = element.expression.variants.map(
+                (variant, i) => {
+                    if (typeof variant.value.elements[0].value !== 'string') {
+                        return null;
+                    }
 
-                return renderItem(
-                    variant.value.elements[0].value,
-                    serializeVariantKey(variant.key),
-                    [index, i].join('-'),
-                    indent ? 'indented' : null,
-                );
-            });
+                    return renderItem(
+                        variant.value.elements[0].value,
+                        serializeVariantKey(variant.key),
+                        [index, i].join('-'),
+                        indent ? 'indented' : null,
+                    );
+                },
+            );
             indent = false;
             return variantItems;
-        }
-        else {
-            if (typeof(element.value) !== 'string') {
+        } else {
+            if (typeof element.value !== 'string') {
                 return null;
             }
 
             indent = true;
-            return renderItem(
-                element.value,
-                label,
-                index.toString(),
-            );
+            return renderItem(element.value, label, index.toString());
         }
     });
 }
-
 
 function renderValue(value: Pattern, label?: string): React.Node {
     if (!value) {
@@ -94,12 +90,8 @@ function renderValue(value: Pattern, label?: string): React.Node {
         label = 'Value';
     }
 
-    return renderElements(
-        value.elements,
-        label,
-    );
+    return renderElements(value.elements, label);
 }
-
 
 function renderAttributes(attributes: ?FluentAttributes): React.Node {
     if (!attributes) {
@@ -107,26 +99,27 @@ function renderAttributes(attributes: ?FluentAttributes): React.Node {
     }
 
     return attributes.map((attribute: FluentAttribute) => {
-        return renderValue(
-            attribute.value,
-            attribute.id.name,
-        );
+        return renderValue(attribute.value, attribute.id.name);
     });
 }
-
 
 /**
  * Show the original string of a Fluent entity in a rich interface.
  */
 export default function RichString(props: Props) {
     const message = fluent.flattenMessage(
-        fluent.parser.parseEntry(props.entity.original)
+        fluent.parser.parseEntry(props.entity.original),
     );
 
-    return <table className="original fluent-rich-string" onClick={ props.handleClickOnPlaceable }>
-        <tbody>
-            { renderValue(message.value) }
-            { renderAttributes(message.attributes) }
-        </tbody>
-    </table>;
+    return (
+        <table
+            className='original fluent-rich-string'
+            onClick={props.handleClickOnPlaceable}
+        >
+            <tbody>
+                {renderValue(message.value)}
+                {renderAttributes(message.attributes)}
+            </tbody>
+        </table>
+    );
 }

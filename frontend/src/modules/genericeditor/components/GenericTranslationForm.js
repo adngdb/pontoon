@@ -4,7 +4,6 @@ import * as React from 'react';
 
 import type { EditorProps } from 'core/editor';
 
-
 /*
  * Render a simple textarea to edit a translation.
  */
@@ -59,7 +58,7 @@ export default class GenericTranslationForm extends React.Component<EditorProps>
         // used to update the translation.
         if (editor.selectionReplacementContent) {
             this.updateTranslationSelectionWith(
-                editor.selectionReplacementContent
+                editor.selectionReplacementContent,
             );
             this.props.resetSelectionContent();
         }
@@ -90,7 +89,8 @@ export default class GenericTranslationForm extends React.Component<EditorProps>
             return;
         }
 
-        const newSelectionPos = this.textarea.current.selectionStart + content.length;
+        const newSelectionPos =
+            this.textarea.current.selectionStart + content.length;
 
         // Update content in the textarea.
         this.textarea.current.setRangeText(content);
@@ -106,30 +106,30 @@ export default class GenericTranslationForm extends React.Component<EditorProps>
     }
 
     handleShortcuts = (event: SyntheticKeyboardEvent<HTMLTextAreaElement>) => {
-        this.props.handleShortcuts(
-            event,
-            this.props.sendTranslation,
-        );
-    }
+        this.props.handleShortcuts(event, this.props.sendTranslation);
+    };
 
     handleChange = (event: SyntheticInputEvent<HTMLTextAreaElement>) => {
         this.props.updateTranslation(event.currentTarget.value);
-    }
+    };
 
     render() {
-        return <textarea
-            placeholder={
-                this.props.isReadOnlyEditor ? null :
-                'Type translation and press Enter to save'
-            }
-            readOnly={ this.props.isReadOnlyEditor }
-            ref={ this.textarea }
-            value={ this.props.editor.translation }
-            onKeyDown={ this.handleShortcuts }
-            onChange={ this.handleChange }
-            dir={ this.props.locale.direction }
-            lang={ this.props.locale.code }
-            data-script={ this.props.locale.script }
-        />;
+        return (
+            <textarea
+                placeholder={
+                    this.props.isReadOnlyEditor
+                        ? null
+                        : 'Type translation and press Enter to save'
+                }
+                readOnly={this.props.isReadOnlyEditor}
+                ref={this.textarea}
+                value={this.props.editor.translation}
+                onKeyDown={this.handleShortcuts}
+                onChange={this.handleChange}
+                dir={this.props.locale.direction}
+                lang={this.props.locale.code}
+                data-script={this.props.locale.script}
+            />
+        );
     }
 }

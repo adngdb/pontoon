@@ -6,22 +6,19 @@ import * as notification from 'core/notification';
 export const UPDATE: 'user/UPDATE' = 'user/UPDATE';
 export const UPDATE_SETTINGS: 'user/UPDATE_SETTINGS' = 'user/UPDATE_SETTINGS';
 
-
 /**
  * Update Interactive Tour status to a given step.
  */
 export function updateTourStatus(step: number): Function {
     return async () => {
         await api.user.updateTourStatus(step);
-    }
+    };
 }
-
 
 export type Settings = {
     runQualityChecks?: boolean,
     forceSuggestions?: boolean,
 };
-
 
 /**
  * Update the user settings.
@@ -37,7 +34,6 @@ export function updateSettings(settings: Settings): UpdateSettingsAction {
     };
 }
 
-
 /**
  * Update the user data.
  */
@@ -52,7 +48,6 @@ export function update(data: Object): UpdateAction {
     };
 }
 
-
 /**
  * Sign out the current user.
  */
@@ -61,9 +56,8 @@ export function signOut(url: string): Function {
         await api.user.signOut(url);
 
         dispatch(get());
-    }
+    };
 }
-
 
 function _getOperationNotif(setting, value) {
     if (setting === 'runQualityChecks' && value) {
@@ -82,7 +76,11 @@ function _getOperationNotif(setting, value) {
     throw new Error('Unsupported operation on setting: ' + setting);
 }
 
-export function saveSetting(setting: string, value: boolean, username: string): Function {
+export function saveSetting(
+    setting: string,
+    value: boolean,
+    username: string,
+): Function {
     return async dispatch => {
         dispatch(updateSettings({ [setting]: value }));
 
@@ -93,15 +91,13 @@ export function saveSetting(setting: string, value: boolean, username: string): 
     };
 }
 
-
 export function markAllNotificationsAsRead(): Function {
     return async dispatch => {
         await api.user.markAllNotificationsAsRead();
 
         dispatch(get());
-    }
+    };
 }
-
 
 /**
  * Get data about the current user from the server.
@@ -113,9 +109,8 @@ export function get(): Function {
     return async dispatch => {
         const content = await api.user.get();
         dispatch(update(content));
-    }
+    };
 }
-
 
 export default {
     get,

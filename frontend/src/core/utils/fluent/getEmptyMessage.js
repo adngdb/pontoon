@@ -10,7 +10,6 @@ import { CLDR_PLURALS } from 'core/plural';
 import type { FluentMessage } from './types';
 import type { Locale } from 'core/locale';
 
-
 /**
  * Gather custom (numeric) plural variants
  */
@@ -50,7 +49,7 @@ function withDefaultVariant(variants) {
     });
 
     if (!defaultVariant) {
-        variants[variants.length-1].default = true;
+        variants[variants.length - 1].default = true;
     }
 
     return variants;
@@ -89,10 +88,12 @@ export default function getEmptyMessage(
                 const numericVariants = getNumericVariants(variants);
 
                 const template = getCldrTemplateVariant(variants);
-                const localeVariants = template ? getLocaleVariants(locale, template) : [];
+                const localeVariants = template
+                    ? getLocaleVariants(locale, template)
+                    : [];
 
                 node.variants = withDefaultVariant(
-                    numericVariants.concat(localeVariants)
+                    numericVariants.concat(localeVariants),
                 );
             }
 

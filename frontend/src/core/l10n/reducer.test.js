@@ -1,14 +1,13 @@
 import reducer from './reducer';
 import { RECEIVE, REQUEST } from './actions';
 
-
 describe('reducer', () => {
     it('returns the initial state', () => {
         const res = reducer(undefined, {});
         const expected = {
             fetching: false,
             bundles: [],
-        }
+        };
         expect(res).toEqual(expected);
     });
 
@@ -20,9 +19,9 @@ describe('reducer', () => {
     it('handles the RECEIVE action', () => {
         const initial = {
             fetching: true,
-            bundles: [ { messages: ['hello'] } ],
-        }
-        const bundles = [ { messages: ['world'] } ];
+            bundles: [{ messages: ['hello'] }],
+        };
+        const bundles = [{ messages: ['world'] }];
 
         const res = reducer(initial, { type: RECEIVE, bundles });
 
