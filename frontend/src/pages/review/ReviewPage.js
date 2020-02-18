@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useParams } from 'react-router-dom';
 
-import ReviewTranslation from './ReviewTranslation';
+import { ReviewTranslation } from 'modules/review';
 
 
 export default function ReviewPage() {

@@ -10,7 +10,6 @@ import ProjectAPI from './project';
 import ResourceAPI from './resource';
 import TranslationAPI from './translation';
 import UserAPI from './user';
-import CommentAPI from './comment';
 
 
 export type {
@@ -27,7 +26,6 @@ export type {
 export default {
     comment: new CommentAPI(),
     entity: new EntityAPI(),
-    comment: new CommentAPI(),
     filter: new FilterAPI(),
     locale: new LocaleAPI(),
     l10n: new L10nAPI(),
