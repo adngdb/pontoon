@@ -1,22 +1,19 @@
 /* @flow */
 
 import * as React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Localized } from '@fluent/react';
 
 import './FailedChecks.css';
 
+import * as editor from 'core/editor';
+import * as user from 'core/user';
+
 import type { UserState } from 'core/user';
-import { withActionsDisabled } from 'core/utils';
 import type { ChangeOperation } from 'modules/history';
 
 
-type Props = {|
-    source: '' | 'stored' | 'submitted' | number,
-    user: UserState,
-    isTranslator: boolean,
-    errors: Array<string>,
-    warnings: Array<string>,
-    resetFailedChecks: () => void,
+type FailedChecksProps = {|
     sendTranslation: (ignoreWarnings?: boolean, translation?: string) => void,
     updateTranslationStatus: (
         translationId: number,
@@ -25,92 +22,38 @@ type Props = {|
     ) => void,
 |};
 
-type InternalProps = {|
-    ...Props,
-    isActionDisabled: boolean,
-    disableAction: () => void,
-|};
-
-
-/*
- * Renders the failed checks popup.
+/**
+ * Shows a list of failed checks (errors and warnings) and a button to ignore
+ * those checks and proceed anyway.
  */
-export class FailedChecksBase extends React.Component<InternalProps> {
-    closeFailedChecks = () => {
-        this.props.resetFailedChecks();
+export default function FailedChecks(props: FailedChecksProps) {
+    const errors = useSelector(state => state.editor.errors);
+    const warnings = useSelector(state => state.editor.warnings);
+    if (!errors.length && !warnings.length) {
+        return null;
     }
 
-    approveAnyway = () => {
-        if (this.props.isActionDisabled) {
-            return;
-        }
-        this.props.disableAction();
+    const dispatch = useDispatch();
+    function resetChecks() {
+        dispatch(editor.actions.resetFailedChecks());
+    }
 
-        const translationId = this.props.source;
-        if (typeof(translationId) === 'number') {
-            this.props.updateTranslationStatus(translationId, 'approve', true);
+    const source = useSelector(state => state.editor.source);
+    function approveAnyway() {
+        if (typeof(source) === 'number') {
+            props.updateTranslationStatus(source, 'approve', true);
         }
     }
 
-    submitAnyway = () => {
-        if (this.props.isActionDisabled) {
-            return;
-        }
-        this.props.disableAction();
-
-        this.props.sendTranslation(true);
+    function submitAnyway() {
+        props.sendTranslation(true);
     }
 
-    renderMainAction() {
-        const { source, user, isTranslator, errors } = this.props;
+    const userState = useSelector(state => state.user);
+    const isTranslator = useSelector(state => user.selectors.isTranslator(state));
 
-        if (source === 'stored' || errors.length) {
-            return null;
-        }
-
-        if (source !== 'submitted') {
-            return <Localized id="editor-FailedChecks--approve-anyway">
-                <button
-                    className="approve anyway"
-                    disabled={ this.props.isActionDisabled }
-                    onClick={ this.approveAnyway }
-                >
-                    Approve anyway
-                </button>
-            </Localized>;
-        }
-
-        if (user.settings.forceSuggestions || !isTranslator) {
-            return <Localized id="editor-FailedChecks--suggest-anyway">
-                <button
-                    className="suggest anyway"
-                    disabled={ this.props.isActionDisabled }
-                    onClick={ this.submitAnyway }
-                >
-                    Suggest anyway
-                </button>
-            </Localized>;
-        }
-
-        return <Localized id="editor-FailedChecks--save-anyway">
-            <button
-                className="save anyway"
-                disabled={ this.props.isActionDisabled }
-                onClick={ this.submitAnyway }
-            >
-                Save anyway
-            </button>
-        </Localized>;
-    }
-
-    render() {
-        const { errors, warnings } = this.props;
-
-        if (!errors.length && !warnings.length) {
-            return null;
-        }
-
-        return <div className="failed-checks">
+    return (
+        <div className="failed-checks">
             <Localized
                 id="editor-FailedChecks--close"
                 attrs={{ ariaLabel: true }}
@@ -127,25 +70,77 @@ export class FailedChecksBase extends React.Component<InternalProps> {
                 <p className="title">The following checks have failed</p>
             </Localized>
             <ul>
-                {
-                    errors.map((error, key) => {
-                        return <li className="error" key={ key }>
-                            { error }
-                        </li>;
-                    })
-                }
-                {
-                    warnings.map((warning, key) => {
-                        return <li className="warning" key={ key }>
-                            { warning }
-                        </li>;
-                    })
-                }
+                { errors.map(
+                    (error, key) => <li className="error" key={ key }>
+                        { error }
+                    </li>
+                ) }
+                { warnings.map(
+                    (warning, key) => <li className="warning" key={ key }>
+                        { warning }
+                    </li>
+                ) }
             </ul>
-            { this.renderMainAction() }
-        </div>;
-    }
+            <MainAction
+                source={ source }
+                user={ userState }
+                isTranslator={ isTranslator }
+                errors={ errors }
+                approveAnyway={ approveAnyway }
+                submitAnyway={ submitAnyway }
+            />
+        </div>
+    );
 }
 
 
-export default withActionsDisabled(FailedChecksBase);
+type MainActionProps = {|
+    source: number,
+    user: UserState,
+    isTranslator: boolean,
+    errors: Array<string>,
+    approveAnyway: () => void,
+    submitAnyway: () => void,
+|};
+
+/**
+ * Shows a button to ignore failed checks and proceed with the main editor action.
+ */
+function MainAction(props: MainActionProps) {
+    const { source, user, isTranslator, errors, approveAnyway, submitAnyway } = props;
+
+    if (source === 'stored' || errors.length) {
+        return null;
+    }
+
+    if (source !== 'submitted') {
+        return <Localized id="editor-FailedChecks--approve-anyway">
+            <button
+                className="approve anyway"
+                onClick={ approveAnyway }
+            >
+                Approve anyway
+            </button>
+        </Localized>;
+    }
+
+    if (user.settings.forceSuggestions || !isTranslator) {
+        return <Localized id="editor-FailedChecks--suggest-anyway">
+            <button
+                className="suggest anyway"
+                onClick={ submitAnyway }
+            >
+                Suggest anyway
+            </button>
+        </Localized>;
+    }
+
+    return <Localized id="editor-FailedChecks--save-anyway">
+        <button
+            className="save anyway"
+            onClick={ submitAnyway }
+        >
+            Save anyway
+        </button>
+    </Localized>;
+}
