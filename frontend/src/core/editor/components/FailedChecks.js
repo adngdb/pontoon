@@ -6,20 +6,15 @@ import { Localized } from '@fluent/react';
 
 import './FailedChecks.css';
 
-import * as editor from 'core/editor';
 import * as user from 'core/user';
 
+import { actions, useUpdateTranslationStatus } from '..';
+
 import type { UserState } from 'core/user';
-import type { ChangeOperation } from 'modules/history';
 
 
 type FailedChecksProps = {|
-    sendTranslation: (ignoreWarnings?: boolean, translation?: string) => void,
-    updateTranslationStatus: (
-        translationId: number,
-        change: ChangeOperation,
-        ignoreWarnings: ?boolean,
-    ) => void,
+    sendTranslation: (ignoreWarnings?: boolean) => void,
 |};
 
 /**
@@ -29,19 +24,17 @@ type FailedChecksProps = {|
 export default function FailedChecks(props: FailedChecksProps) {
     const errors = useSelector(state => state.editor.errors);
     const warnings = useSelector(state => state.editor.warnings);
-    if (!errors.length && !warnings.length) {
-        return null;
-    }
 
     const dispatch = useDispatch();
     function resetChecks() {
-        dispatch(editor.actions.resetFailedChecks());
+        dispatch(actions.resetFailedChecks());
     }
 
     const source = useSelector(state => state.editor.source);
+    const updateTranslationStatus = useUpdateTranslationStatus();
     function approveAnyway() {
         if (typeof(source) === 'number') {
-            props.updateTranslationStatus(source, 'approve', true);
+            updateTranslationStatus(source, 'approve', true);
         }
     }
 
@@ -52,6 +45,10 @@ export default function FailedChecks(props: FailedChecksProps) {
     const userState = useSelector(state => state.user);
     const isTranslator = useSelector(state => user.selectors.isTranslator(state));
 
+    if (!errors.length && !warnings.length) {
+        return null;
+    }
+
     return (
         <div className="failed-checks">
             <Localized
@@ -61,7 +58,7 @@ export default function FailedChecks(props: FailedChecksProps) {
                 <button
                     aria-label="Close failed checks popup"
                     className="close"
-                    onClick={ this.closeFailedChecks }
+                    onClick={ resetChecks }
                 >×</button>
             </Localized>
             <Localized

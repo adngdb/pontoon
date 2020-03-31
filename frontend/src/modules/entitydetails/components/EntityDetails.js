@@ -25,6 +25,7 @@ import * as teamcomments from 'modules/teamcomments';
 import * as unsavedchanges from 'modules/unsavedchanges';
 import * as notification from 'core/notification';
 
+import EditorSelector from './EditorSelector';
 import EntityNavigation from './EntityNavigation';
 import Metadata from './Metadata';
 import Helpers from './Helpers';
@@ -333,10 +334,7 @@ export class EntityDetailsBase extends React.Component<InternalProps, State> {
                     addTextToEditorTranslation={ this.addTextToEditorTranslation }
                     navigateToPath={ this.navigateToPath }
                 />
-                { state.selectedEntity.format === 'ftl' ?
-                    <fluenteditor.Editor /> :
-                    <genericeditor.Editor />
-                }
+                <EditorSelector fileFormat={ state.selectedEntity.format } />
                 <history.History
                     entity={ state.selectedEntity }
                     history={ state.history }

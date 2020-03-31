@@ -28,8 +28,10 @@ export default class SourceEditor extends React.Component<Props> {
         return <>
             <GenericTranslationForm { ...props } />
             <editor.EditorMenu
-                { ...props }
                 firstItemHook={ ftlSwitch }
+                clearEditor={ this.props.clearEditor }
+                copyOriginalIntoEditor={ this.props.copyOriginalIntoEditor }
+                sendTranslation={ this.props.sendTranslation }
             />
         </>;
     }
