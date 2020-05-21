@@ -253,8 +253,8 @@ export class EntityDetailsBase extends React.Component<InternalProps, State> {
         this.props.dispatch(editor.actions.update(translation, changeSource));
     }
 
-    addTextToEditorTranslation = (content: string) => {
-        this.props.dispatch(editor.actions.updateSelection(content));
+    addTextToEditorTranslation = (content: string, changeSource?: string) => {
+        this.props.dispatch(editor.actions.updateSelection(content, changeSource));
     }
 
     deleteTranslation = (translationId: number) => {
@@ -350,6 +350,7 @@ export class EntityDetailsBase extends React.Component<InternalProps, State> {
             </section>
             <section className="third-column">
                 <Helpers
+                    editor={ state.editor }
                     entity={ state.selectedEntity }
                     isReadOnlyEditor={ state.isReadOnlyEditor }
                     locale={ state.locale }

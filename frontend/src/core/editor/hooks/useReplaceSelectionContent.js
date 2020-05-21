@@ -8,6 +8,7 @@ import * as editor from 'core/editor';
 
 export default function useReplaceSelectionContent(updateTranslationSelectionWith: Function) {
     const dispatch = useDispatch();
+    const changeSource = useSelector(state => state.editor.changeSource);
     const selectionReplacementContent = useSelector(
         state => state.editor.selectionReplacementContent
     );
@@ -19,8 +20,8 @@ export default function useReplaceSelectionContent(updateTranslationSelectionWit
         // the content differently for each Editor type. Thus each Editor
         // must use this hook and pass it a function specific to its needs.
         if (selectionReplacementContent) {
-            updateTranslationSelectionWith(selectionReplacementContent);
+            updateTranslationSelectionWith(selectionReplacementContent, changeSource);
             dispatch(editor.actions.resetSelection());
         }
-    }, [selectionReplacementContent, dispatch, updateTranslationSelectionWith]);
+    }, [changeSource, selectionReplacementContent, dispatch, updateTranslationSelectionWith]);
 }

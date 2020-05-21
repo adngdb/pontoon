@@ -78,6 +78,11 @@ export default function SimpleEditor(props: Props) {
         sendTranslation(ignoreWarnings, content);
     }
 
+    // If the translation is not a string, wait until this component fixes that.
+    if (typeof(translation) !== 'string') {
+        return null;
+    }
+
     return (
         <>
             <GenericTranslationForm

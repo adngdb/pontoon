@@ -37,6 +37,13 @@ export default function RichEditor(props: Props) {
         state => plural.selectors.getTranslationStringForSelectedEntity(state)
     );
 
+    React.useEffect(() => {
+        if (typeof(translation) === 'string') {
+            const message = fluent.parser.parseEntry(translation);
+            updateTranslation(message);
+        }
+    }, [translation, updateTranslation, dispatch]);
+
     // Format the translation to be an actual Fluent message that this editor can handle.
     React.useEffect(() => {
         const source = activeTranslationString || entity.original;
@@ -50,13 +57,6 @@ export default function RichEditor(props: Props) {
         dispatch(editor.actions.setInitialTranslation(translationContent));
         updateTranslation(translationContent);
     }, [entity, activeTranslationString, locale, updateTranslation, dispatch]);
-
-    React.useEffect(() => {
-        if (typeof(translation) === 'string') {
-            const content = fluent.parser.parseEntry(translation);
-            updateTranslation(content);
-        }
-    }, [translation, updateTranslation]);
 
     function clearEditor() {
         if (entity) {

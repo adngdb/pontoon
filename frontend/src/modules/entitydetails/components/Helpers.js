@@ -12,6 +12,7 @@ import { Machinery, MachineryCount } from 'modules/machinery';
 import { OtherLocales, OtherLocalesCount } from 'modules/otherlocales';
 
 import type { Entity } from 'core/api';
+import type { EditorState } from 'core/editor';
 import type { TermState } from 'core/term';
 import type { TeamCommentState } from 'modules/teamcomments';
 import type { Locale } from 'core/locale';
@@ -22,6 +23,7 @@ import type { LocalesState } from 'modules/otherlocales';
 
 
 type Props = {|
+    editor: EditorState,
     entity: Entity,
     isReadOnlyEditor: boolean,
     locale: Locale,
@@ -47,6 +49,7 @@ type Props = {|
 export default class Helpers extends React.Component<Props> {
     render() {
         const {
+            editor,
             entity,
             isReadOnlyEditor,
             locale,
@@ -123,9 +126,11 @@ export default class Helpers extends React.Component<Props> {
                     </TabList>
                     <TabPanel>
                         <Machinery
+                            editor={ editor }
                             isReadOnlyEditor={ isReadOnlyEditor }
                             locale={ locale }
                             machinery={ machinery }
+                            addTextToEditorTranslation={ addTextToEditorTranslation }
                             updateEditorTranslation={ updateEditorTranslation }
                             searchMachinery={ searchMachinery }
                         />

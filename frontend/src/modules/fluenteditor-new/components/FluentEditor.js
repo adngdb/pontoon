@@ -1,13 +1,14 @@
 /* @flow */
 
 import * as React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+// import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import 'modules/fluenteditor/components/Editor.css';
 
-import * as editor from 'core/editor';
+// import * as editor from 'core/editor';
 import * as entities from 'core/entities';
-import * as notification from 'core/notification';
+// import * as notification from 'core/notification';
 import * as plural from 'core/plural';
 import { fluent } from 'core/utils';
 
@@ -62,50 +63,50 @@ function useAnalyzeFluentMessage() {
  *      - a boolean indicating if the source mode is enabled;
  *      - a function to toggle the source mode.
  */
-function useForceSource() {
-    const dispatch = useDispatch();
-
-    const translation = useSelector(state => state.editor.translation);
-    const entity = useSelector(state => entities.selectors.getSelectedEntity(state));
-    const activeTranslationString = useSelector(
-        state => plural.selectors.getTranslationStringForSelectedEntity(state)
-    );
-    const locale = useSelector(state => state.locale);
-
-    // Force using the source editor.
-    const [forceSource, setForceSource] = React.useState(false);
-
-    const syntaxType = useAnalyzeFluentMessage();
-
-    // When the entity changes, reset the `forceSource` setting. Never show the source
-    // editor by default.
-    React.useEffect(() => {
-        setForceSource(false);
-    }, [entity]);
-
-    // When a user wants to force (or unforce) the source editor, we need to convert
-    // the existing translation to a format appropriate for the next editor type.
-    function changeForceSource() {
-        if (syntaxType === 'complex') {
-            return;
-        }
-        const fromSyntax = forceSource ? 'complex' : syntaxType;
-        const toSyntax = forceSource ? syntaxType : 'complex';
-        const [translationContent, initialContent] = fluent.convertSyntax(
-            fromSyntax,
-            toSyntax,
-            translation,
-            entity.original,
-            activeTranslationString,
-            locale,
-        );
-        dispatch(editor.actions.setInitialTranslation(initialContent));
-        dispatch(editor.actions.update(translationContent));
-        setForceSource(!forceSource);
-    }
-
-    return [forceSource, changeForceSource];
-}
+// function useForceSource() {
+//     const dispatch = useDispatch();
+//
+//     const translation = useSelector(state => state.editor.translation);
+//     const entity = useSelector(state => entities.selectors.getSelectedEntity(state));
+//     const activeTranslationString = useSelector(
+//         state => plural.selectors.getTranslationStringForSelectedEntity(state)
+//     );
+//     const locale = useSelector(state => state.locale);
+//
+//     // Force using the source editor.
+//     const [forceSource, setForceSource] = React.useState(false);
+//
+//     const syntaxType = useAnalyzeFluentMessage();
+//
+//     // When the entity changes, reset the `forceSource` setting. Never show the source
+//     // editor by default.
+//     React.useEffect(() => {
+//         setForceSource(false);
+//     }, [entity]);
+//
+//     // When a user wants to force (or unforce) the source editor, we need to convert
+//     // the existing translation to a format appropriate for the next editor type.
+//     function changeForceSource() {
+//         if (syntaxType === 'complex') {
+//             return;
+//         }
+//         const fromSyntax = forceSource ? 'complex' : syntaxType;
+//         const toSyntax = forceSource ? syntaxType : 'complex';
+//         const [translationContent, initialContent] = fluent.convertSyntax(
+//             fromSyntax,
+//             toSyntax,
+//             translation,
+//             entity.original,
+//             activeTranslationString,
+//             locale,
+//         );
+//         dispatch(editor.actions.setInitialTranslation(initialContent));
+//         dispatch(editor.actions.update(translationContent));
+//         setForceSource(!forceSource);
+//     }
+//
+//     return [forceSource, changeForceSource];
+// }
 
 
 /**
@@ -114,17 +115,18 @@ function useForceSource() {
  * Renders the most appropriate type of editor for the current translation.
  */
 export default function FluentEditor() {
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
 
-    const isReadOnlyEditor = useSelector(state => entities.selectors.isReadOnlyEditor(state));
-    const user = useSelector(state => state.user);
+    // const isReadOnlyEditor = useSelector(state => entities.selectors.isReadOnlyEditor(state));
+    // const user = useSelector(state => state.user);
 
-    const [forceSource, changeForceSource] = useForceSource();
+    // const [forceSource, changeForceSource] = useForceSource();
     const syntaxType = useAnalyzeFluentMessage();
 
     // Choose which editor implementation to render.
     let EditorImplementation = RichEditor;
-    if (forceSource || syntaxType === 'complex') {
+    // if (forceSource || syntaxType === 'complex') {
+    if (syntaxType === 'complex') {
         EditorImplementation = SourceEditor;
     }
     else if (syntaxType === 'simple') {
@@ -134,41 +136,41 @@ export default function FluentEditor() {
     // When the syntax is complex, the editor is blocked in source mode, and it
     // becomes impossible to switch to a different editor type. Thus we show a
     // notification to the user if they try to use the "FTL" switch button.
-    function showUnsupportedMessage() {
-        dispatch(
-            notification.actions.add(
-                notification.messages.FTL_NOT_SUPPORTED_RICH_EDITOR
-            )
-        );
-    }
+    // function showUnsupportedMessage() {
+    //     dispatch(
+    //         notification.actions.add(
+    //             notification.messages.FTL_NOT_SUPPORTED_RICH_EDITOR
+    //         )
+    //     );
+    // }
 
     // Show a button to allow switching to the source editor.
-    let ftlSwitch = null;
+    // let ftlSwitch = null;
     // But only if the user is logged in and the string is not read-only.
-    if (user.isAuthenticated && !isReadOnlyEditor) {
-        if (syntaxType === 'complex') {
-            // TODO: To Localize
-            ftlSwitch = <button
-                className='ftl active'
-                title='Advanced FTL mode enabled'
-                onClick={ showUnsupportedMessage }
-            >
-                FTL
-            </button>;
-        }
-        else {
-            // TODO: To Localize
-            ftlSwitch = <button
-                className={ 'ftl' + (forceSource ? ' active' : '') }
-                title='Toggle between simple and advanced FTL mode'
-                onClick={ changeForceSource }
-            >
-                FTL
-            </button>;
-        }
-    }
+    // if (user.isAuthenticated && !isReadOnlyEditor) {
+    //     if (syntaxType === 'complex') {
+    //         // TODO: To Localize
+    //         ftlSwitch = <button
+    //             className='ftl active'
+    //             title='Advanced FTL mode enabled'
+    //             onClick={ showUnsupportedMessage }
+    //         >
+    //             FTL
+    //         </button>;
+    //     }
+    //     else {
+    //         // TODO: To Localize
+    //         ftlSwitch = <button
+    //             className={ 'ftl' + (forceSource ? ' active' : '') }
+    //             title='Toggle between simple and advanced FTL mode'
+    //             onClick={ changeForceSource }
+    //         >
+    //             FTL
+    //         </button>;
+    //     }
+    // }
 
     return <EditorImplementation
-        ftlSwitch={ ftlSwitch }
+        ftlSwitch={ null }
     />;
 }

@@ -75,7 +75,7 @@ export default function RichTranslationForm(props: Props) {
 
     const dispatch = useDispatch();
 
-    const message = useSelector(state => state.editor.translation);
+    let message = useSelector(state => state.editor.translation);
     const changeSource = useSelector(state => state.editor.changeSource);
     const localeState = useSelector(state => state.locale);
     const isReadOnlyEditor = useSelector(state => entities.selectors.isReadOnlyEditor(state));
@@ -110,37 +110,19 @@ export default function RichTranslationForm(props: Props) {
         return null;
     }, []);
 
-    // Handle copy from machinery.
-    const [previousTranslation, setPreviousTranslation] = React.useState('');
-    React.useEffect(() => {
-        if (typeof(message) === 'string' && changeSource === 'machinery') {
-            console.debug('change from machinery');
-            updateTranslation(previousTranslation);
-            console.debug('restore previous translation: ' + previousTranslation);
-            dispatch(editor.actions.updateSelection(message));
-            console.debug('update selection: ' + message);
-            if (focusedElementIdRef.current) {
-                const element = 'textarea#' + focusedElementIdRef.current;
-                tableBodyRef.current.querySelector(element).select();
-            }
-        }
-        else {
-            setPreviousTranslation(message);
-        }
-    }, [message, changeSource, previousTranslation, updateTranslation, dispatch]);
-
     // Replace selected content on external actions (for example, when a user clicks
     // on a placeable).
-    editor.useReplaceSelectionContent((content: string) => {
-        let target = getFocusedElement();
-
+    editor.useReplaceSelectionContent((content: string, source: string) => {
         // If there is no explicitely focused element, find the first input.
-        if (!target) {
-            target = getFirstInput();
-        }
+        const target = getFocusedElement() || getFirstInput();
 
         if (!target) {
             return;
+        }
+
+        if (source === 'machinery') {
+            // Replace the whole content instead of just what was selected.
+            target.select();
         }
 
         const newSelectionPos = target.selectionStart + content.length;

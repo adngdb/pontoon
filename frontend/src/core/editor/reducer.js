@@ -133,7 +133,7 @@ export default function reducer(
             return {
                 ...state,
                 selectionReplacementContent: action.content,
-                changeSource: 'internal',
+                changeSource: action.changeSource,
             };
         case SET_INITIAL_TRANSLATION:
             return {

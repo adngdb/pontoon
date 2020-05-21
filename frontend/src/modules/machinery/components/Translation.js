@@ -7,17 +7,20 @@ import './Translation.css';
 
 import { GenericTranslation } from 'core/translation';
 
+import TranslationSource from './TranslationSource';
+
+import type { EditorState } from 'core/editor';
 import type { MachineryTranslation } from 'core/api';
 import type { Locale } from 'core/locale';
 
-import TranslationSource from './TranslationSource';
-
 
 type Props = {|
+    editor: EditorState,
     isReadOnlyEditor: boolean,
     locale: Locale,
     sourceString: string,
     translation: MachineryTranslation,
+    addTextToEditorTranslation: (string, ?string) => void,
     updateEditorTranslation: (string, string) => void,
 |};
 
@@ -40,7 +43,14 @@ export default class Translation extends React.Component<Props> {
             return;
         }
 
-        this.props.updateEditorTranslation(this.props.translation.translation, 'machinery');
+        if (typeof(this.props.editor.translation) !== 'string') {
+            // This is a Fluent Message, thus we are in the RichEditor.
+            // Handle machinery differently.
+            this.props.addTextToEditorTranslation(this.props.translation.translation, 'machinery');
+        }
+        else {
+            this.props.updateEditorTranslation(this.props.translation.translation, 'machinery');
+        }
     };
 
     render() {
