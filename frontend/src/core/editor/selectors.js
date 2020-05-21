@@ -80,13 +80,7 @@ export function _existingTranslation(
                     fluentTranslation = fluent.getReconstructedMessage(entity.original, translation);
                 }
                 existingTranslation = history.translations.find(
-                    t => {
-                        try {
-                            fluentTranslation.equals(fluent.parser.parseEntry(t.string));
-                        } catch (e) {
-                        }
-                        return fluentTranslation.equals(fluent.parser.parseEntry(t.string));
-                    }
+                    t => fluentTranslation.equals(fluent.parser.parseEntry(t.string))
                 );
             }
             else {
