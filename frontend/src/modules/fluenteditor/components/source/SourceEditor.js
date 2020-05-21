@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import * as editor from 'core/editor';
 
-import { GenericTranslationForm } from 'modules/genericeditor-new';
+import { GenericTranslationForm } from 'modules/genericeditor';
 
 
 type Props = {

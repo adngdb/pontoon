@@ -19,8 +19,6 @@ import * as utils from 'core/utils';
 import * as history from 'modules/history';
 import * as machinery from 'modules/machinery';
 import * as otherlocales from 'modules/otherlocales';
-import * as genericeditor from 'modules/genericeditor';
-import * as fluenteditor from 'modules/fluenteditor';
 import * as teamcomments from 'modules/teamcomments';
 import * as unsavedchanges from 'modules/unsavedchanges';
 import * as notification from 'core/notification';

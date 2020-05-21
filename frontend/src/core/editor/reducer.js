@@ -155,6 +155,7 @@ export default function reducer(
             return {
                 ...state,
                 selectionReplacementContent: '',
+                changeSource: 'internal',
             };
         default:
             return state;

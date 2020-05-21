@@ -7,7 +7,7 @@ import * as editor from 'core/editor';
 import * as entities from 'core/entities';
 import * as plural from 'core/plural';
 import { fluent } from 'core/utils';
-import { GenericTranslationForm } from 'modules/genericeditor-new';
+import { GenericTranslationForm } from 'modules/genericeditor';
 
 
 type Props = {|

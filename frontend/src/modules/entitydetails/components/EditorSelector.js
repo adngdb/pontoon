@@ -4,8 +4,8 @@ import * as React from 'react';
 
 import 'core/editor/components/connectedEditor.css';
 
-import { FluentEditor } from 'modules/fluenteditor-new';
-import { GenericEditor } from 'modules/genericeditor-new';
+import { FluentEditor } from 'modules/fluenteditor';
+import { GenericEditor } from 'modules/genericeditor';
 
 
 type Props = {

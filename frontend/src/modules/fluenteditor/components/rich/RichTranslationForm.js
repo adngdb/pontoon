@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Localized } from '@fluent/react';
 import { serializeVariantKey } from '@fluent/syntax';
 
-import 'modules/fluenteditor/components/RichTranslationForm.css';
+import './RichTranslationForm.css';
 
 import * as editor from 'core/editor';
 import * as entities from 'core/entities';
