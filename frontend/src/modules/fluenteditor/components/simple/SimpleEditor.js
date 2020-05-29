@@ -1,11 +1,10 @@
 /* @flow */
 
 import * as React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import * as editor from 'core/editor';
 import * as entities from 'core/entities';
-import * as plural from 'core/plural';
 import { fluent } from 'core/utils';
 import { GenericTranslationForm } from 'modules/genericeditor';
 
@@ -21,8 +20,6 @@ type Props = {|
  * Makes sure the content is correctly formatted when updated.
  */
 export default function SimpleEditor(props: Props) {
-    const dispatch = useDispatch();
-
     const updateTranslation = editor.useUpdateTranslation();
     const clearEditor = editor.useClearEditor();
     const copyOriginalIntoEditor = editor.useCopyOriginalIntoEditor();
@@ -31,17 +28,6 @@ export default function SimpleEditor(props: Props) {
     const translation = useSelector(state => state.editor.translation);
     const changeSource = useSelector(state => state.editor.changeSource);
     const entity = useSelector(state => entities.selectors.getSelectedEntity(state));
-    const activeTranslationString = useSelector(
-        state => plural.selectors.getTranslationStringForSelectedEntity(state)
-    );
-
-    // Format the translation to be a simplified preview whenever the entity changes.
-    React.useEffect(() => {
-        const translationContent = fluent.getSimplePreview(activeTranslationString);
-
-        dispatch(editor.actions.setInitialTranslation(translationContent));
-        updateTranslation(translationContent);
-    }, [entity, activeTranslationString, updateTranslation, dispatch]);
 
     // Transform the translation into a simple preview whenever it changes from
     // an external source.

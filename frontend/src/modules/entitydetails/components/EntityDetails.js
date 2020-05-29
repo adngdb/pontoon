@@ -332,7 +332,10 @@ export class EntityDetailsBase extends React.Component<InternalProps, State> {
                     addTextToEditorTranslation={ this.addTextToEditorTranslation }
                     navigateToPath={ this.navigateToPath }
                 />
-                <EditorSelector fileFormat={ state.selectedEntity.format } />
+                <EditorSelector
+                    fileFormat={ state.selectedEntity.format }
+                    key={ state.selectedEntity.pk }
+                />
                 <history.History
                     entity={ state.selectedEntity }
                     history={ state.history }

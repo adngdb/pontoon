@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import * as editor from 'core/editor';
 import * as entities from 'core/entities';
-import * as plural from 'core/plural';
 import { fluent } from 'core/utils';
 
 import RichTranslationForm from './RichTranslationForm';
@@ -33,9 +32,6 @@ export default function RichEditor(props: Props) {
     const translation = useSelector(state => state.editor.translation);
     const entity = useSelector(state => entities.selectors.getSelectedEntity(state));
     const locale = useSelector(state => state.locale);
-    const activeTranslationString = useSelector(
-        state => plural.selectors.getTranslationStringForSelectedEntity(state)
-    );
 
     React.useEffect(() => {
         if (typeof(translation) === 'string') {
@@ -43,20 +39,6 @@ export default function RichEditor(props: Props) {
             updateTranslation(message);
         }
     }, [translation, updateTranslation, dispatch]);
-
-    // Format the translation to be an actual Fluent message that this editor can handle.
-    React.useEffect(() => {
-        const source = activeTranslationString || entity.original;
-        const message = fluent.parser.parseEntry(source);
-
-        let translationContent = message;
-        if (!activeTranslationString) {
-            translationContent = fluent.getEmptyMessage(message, locale);
-        }
-
-        dispatch(editor.actions.setInitialTranslation(translationContent));
-        updateTranslation(translationContent);
-    }, [entity, activeTranslationString, locale, updateTranslation, dispatch]);
 
     function clearEditor() {
         if (entity) {

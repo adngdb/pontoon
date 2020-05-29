@@ -24,8 +24,6 @@ export default function SourceEditor(props: Props) {
     const sendTranslation = editor.useSendTranslation();
     const updateTranslation = editor.useUpdateTranslation();
 
-    editor.useLoadTranslation();
-
     return (
         <>
             <GenericTranslationForm
