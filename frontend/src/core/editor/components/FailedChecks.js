@@ -22,16 +22,20 @@ type FailedChecksProps = {|
  * those checks and proceed anyway.
  */
 export default function FailedChecks(props: FailedChecksProps) {
+    const dispatch = useDispatch();
+
     const errors = useSelector(state => state.editor.errors);
     const warnings = useSelector(state => state.editor.warnings);
+    const source = useSelector(state => state.editor.source);
+    const userState = useSelector(state => state.user);
+    const isTranslator = useSelector(user.selectors.isTranslator);
 
-    const dispatch = useDispatch();
+    const updateTranslationStatus = useUpdateTranslationStatus();
+
     function resetChecks() {
         dispatch(actions.resetFailedChecks());
     }
 
-    const source = useSelector(state => state.editor.source);
-    const updateTranslationStatus = useUpdateTranslationStatus();
     function approveAnyway() {
         if (typeof(source) === 'number') {
             updateTranslationStatus(source, 'approve', true);
@@ -41,9 +45,6 @@ export default function FailedChecks(props: FailedChecksProps) {
     function submitAnyway() {
         props.sendTranslation(true);
     }
-
-    const userState = useSelector(state => state.user);
-    const isTranslator = useSelector(state => user.selectors.isTranslator(state));
 
     if (!errors.length && !warnings.length) {
         return null;

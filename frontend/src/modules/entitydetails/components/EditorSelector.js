@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import 'core/editor/components/connectedEditor.css';
+import './EditorSelector.css';
 
 import { FluentEditor } from 'modules/fluenteditor';
 import { GenericEditor } from 'modules/genericeditor';

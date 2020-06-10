@@ -6,7 +6,7 @@ import { Localized } from '@fluent/react';
 
 import * as user from 'core/user';
 
-import { selectors, useUpdateTranslationStatus } from '..';
+import * as editor from '..';
 
 
 type Props = {
@@ -30,10 +30,10 @@ export default function EditorMainAction(props: Props) {
     const forceSuggestions = useSelector(state => state.user.settings.forceSuggestions);
     const isTranslator = useSelector(state => user.selectors.isTranslator(state));
     const sameExistingTranslation = useSelector(
-        state => selectors.sameExistingTranslation(state)
+        state => editor.selectors.sameExistingTranslation(state)
     );
 
-    const updateTranslationStatus = useUpdateTranslationStatus();
+    const updateTranslationStatus = editor.useUpdateTranslationStatus();
 
     function approveTranslation() {
         if (sameExistingTranslation) {

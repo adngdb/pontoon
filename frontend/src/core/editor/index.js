@@ -4,7 +4,6 @@ export { default as actions } from './actions';
 export { default as reducer } from './reducer';
 export { default as selectors } from './selectors';
 
-export { default as connectedEditor } from './components/connectedEditor';
 export { default as EditorMenu } from './components/EditorMenu';
 export { default as EditorSettings } from './components/EditorSettings';
 export { default as FailedChecks } from './components/FailedChecks';

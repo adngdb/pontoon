@@ -1,5 +1,9 @@
 import { Localized } from '@fluent/react';
+import { push } from 'connected-react-router';
 import { shallow } from 'enzyme';
+
+import * as user from 'core/user';
+
 
 /*
  * Taken from https://github.com/mozilla/addons-frontend/blob/58d1315409f1ad6dc9b979440794df44c1128455/tests/unit/helpers.js#L276
@@ -75,4 +79,35 @@ export function findLocalizedById(wrapper, id) {
     return wrapper.findWhere(
       elem => elem.type() === Localized && elem.prop("id") === id
     );
+}
+
+
+export function createDefaultUser(store, initial = {}) {
+    const userData = {
+        settings: {
+            force_suggestions: false,
+        },
+        username: 'Franck',
+        is_authenticated: true,
+        manager_for_locales: [
+            'kg',
+        ],
+        translator_for_locales: [],
+        translator_for_projects: {},
+    };
+
+    const data = {
+        ...userData,
+        ...initial,
+    };
+
+    store.dispatch(user.actions.update(data));
+}
+
+
+export function createDefaultRoute(store, url) {
+    if (!url) {
+        url = '/kg/firefox/all-resources/';
+    }
+    store.dispatch(push(url));
 }

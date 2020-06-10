@@ -47,6 +47,9 @@ function MenuContent(props: Props) {
     const dispatch = useDispatch();
     const entity = useSelector(state => entities.selectors.getSelectedEntity(state));
     const userState = useSelector(state => state.user);
+
+    console.debug(entity);
+
     if (!userState.isAuthenticated) {
         return (
             <Localized
