@@ -15,6 +15,6 @@ export default function useUpdateTranslation() {
     const dispatch = useDispatch();
 
     return useCallback((translation: Translation) => {
-        dispatch(actions.update(translation, 'internal'));
+        dispatch(actions.update(translation));
     }, [dispatch]);
 }

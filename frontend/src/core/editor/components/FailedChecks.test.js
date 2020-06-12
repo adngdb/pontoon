@@ -2,18 +2,22 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
-import { createDefaultUser, createDefaultRoute } from 'test/utils';
+import { createDefaultUser } from 'test/utils';
 import { createReduxStore, mountComponentWithStore } from 'test/store';
 
 import * as editor from 'core/editor';
+import * as locale from 'core/locale';
+import * as project from 'core/project';
 import * as user from 'core/user';
+
 import FailedChecks from './FailedChecks';
 
 
 function createFailedChecks() {
     const store = createReduxStore();
     createDefaultUser(store);
-    createDefaultRoute(store);
+    store.dispatch(locale.actions.receive({ code: 'kg' }));
+    store.dispatch(project.actions.receive({ slug: 'firefox' }));
 
     const comp = mountComponentWithStore(
         FailedChecks,
@@ -60,6 +64,9 @@ describe('<FailedChecks>', () => {
         ));
         store.dispatch(user.actions.update(
             {
+                settings: {
+                    force_suggestions: false,
+                },
                 is_authenticated: true,
                 username: 'Franck',
                 manager_for_locales: ['kg'],
@@ -80,7 +87,16 @@ describe('<FailedChecks>', () => {
             'submitted',
         ));
         store.dispatch(user.actions.update(
-            { is_authenticated: false }
+            {
+                settings: {
+                    force_suggestions: true,
+                },
+                is_authenticated: true,
+                username: 'Franck',
+                manager_for_locales: [],
+                translator_for_locales: [],
+                translator_for_projects: {},
+            }
         ));
         wrapper.update();
 
@@ -96,6 +112,9 @@ describe('<FailedChecks>', () => {
         ));
         store.dispatch(user.actions.update(
             {
+                settings: {
+                    force_suggestions: false,
+                },
                 is_authenticated: true,
                 username: 'Franck',
                 manager_for_locales: [],
@@ -113,16 +132,7 @@ describe('<FailedChecks>', () => {
 
         store.dispatch(editor.actions.updateFailedChecks(
             { pndbWarnings: ['a warning'] },
-            'submitted',
-        ));
-        store.dispatch(user.actions.update(
-            {
-                is_authenticated: true,
-                username: 'Franck',
-                manager_for_locales: ['kg'],
-                translator_for_locales: [],
-                translator_for_projects: {},
-            }
+            '',
         ));
         wrapper.update();
 

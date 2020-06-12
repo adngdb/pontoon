@@ -10,10 +10,14 @@ import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 import { mount } from 'enzyme';
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
+import { createMemoryHistory } from 'history';
 
 import createRootReducer from 'rootReducer';
 
-import history from './history';
+
+const history = createMemoryHistory({
+    initialEntries: ['/kg/firefox/all-resources/?string=1'],
+});
 
 
 export function createReduxStore(initialState = {}) {

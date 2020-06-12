@@ -32,7 +32,7 @@ export default function SimpleEditor(props: Props) {
     // Transform the translation into a simple preview whenever it changes from
     // an external source.
     React.useEffect(() => {
-        if (changeSource === 'internal' || typeof(translation !== 'string')) {
+        if (changeSource === 'internal' || typeof(translation) !== 'string') {
             return;
         }
 
@@ -64,8 +64,8 @@ export default function SimpleEditor(props: Props) {
         sendTranslation(ignoreWarnings, content);
     }
 
-    // If the translation is not a string, wait until this component fixes that.
-    if (typeof(translation) !== 'string') {
+    // If the translation is not a string, wait until the FluentEditor component fixes that.
+    if (!entity || typeof(translation) !== 'string') {
         return null;
     }
 

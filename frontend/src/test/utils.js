@@ -103,11 +103,3 @@ export function createDefaultUser(store, initial = {}) {
 
     store.dispatch(user.actions.update(data));
 }
-
-
-export function createDefaultRoute(store, url) {
-    if (!url) {
-        url = '/kg/firefox/all-resources/';
-    }
-    store.dispatch(push(url));
-}

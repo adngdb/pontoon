@@ -8,7 +8,7 @@ import EditorSettings from './EditorSettings';
 import KeyboardShortcuts from './KeyboardShortcuts';
 import TranslationLength from './TranslationLength';
 
-import { createDefaultRoute, createDefaultUser } from 'test/utils';
+import { createDefaultUser } from 'test/utils';
 import { createReduxStore, mountComponentWithStore } from 'test/store';
 
 
@@ -17,7 +17,7 @@ const LOCALE = {
 }
 
 const SELECTED_ENTITY = {
-    pk: 42,
+    pk: 1,
     original: 'le test',
     original_plural: 'les tests',
     translation: [
@@ -40,7 +40,6 @@ function createEditorMenu({
             force_suggestions: forceSuggestions,
         },
     });
-    createDefaultRoute(store, `/kg/firefox/resource/?string=${entity.pk}`);
 
     store.dispatch(entities.actions.receive([ entity ], false));
 
@@ -49,8 +48,6 @@ function createEditorMenu({
         store,
         { firstItemHook },
     );
-
-    console.debug(store.getState());
 
     return [ comp, store ];
 }

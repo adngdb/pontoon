@@ -95,6 +95,10 @@ function useAnalyzeFluentMessage() {
     const entity = useSelector(state => entities.selectors.getSelectedEntity(state));
 
     React.useEffect(() => {
+        if (!entity) {
+            return;
+        }
+
         const source = activeTranslationString || entity.original;
         const message = fluent.parser.parseEntry(source);
 

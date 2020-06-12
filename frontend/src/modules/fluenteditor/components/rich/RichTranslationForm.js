@@ -276,9 +276,11 @@ export default function RichTranslationForm(props: Props) {
     function renderLabel(label: string, example: number) {
         return <Localized
             id="fluenteditor-RichTranslationForm--plural-example"
-            $example={ example }
-            $plural={ label }
-            stress={ <span className="stress" /> }
+            vars={{
+                example,
+                plural: label,
+            }}
+            elems={{ stress: <span className="stress" /> }}
         >
             <span className="example">
                 { '{ $plural } (e.g. <stress>{ $example }</stress>)' }
@@ -313,6 +315,7 @@ export default function RichTranslationForm(props: Props) {
         value: string,
         path: MessagePath,
         label: string,
+        attributeName: ?string,
         className: ?string,
         example: ?number,
     ) {
@@ -322,7 +325,14 @@ export default function RichTranslationForm(props: Props) {
                     { typeof(example) === 'number' ?
                         renderLabel(label, example)
                         :
-                        <span>{ label }</span>
+                        attributeName ?
+                            <span>
+                                <span className='attribute-label'>{ attributeName }</span>
+                                <span className='divider'>&middot;</span>
+                                <span className='label'>{ label }</span>
+                            </span>
+                            :
+                            <span>{ label }</span>
                     }
                 </label>
             </td>
@@ -337,6 +347,7 @@ export default function RichTranslationForm(props: Props) {
         eIndex: number,
         vIndex: number,
         pluralExamples: any,
+        attributeName: ?string,
     ) {
         const element = variant.value.elements[0];
         if (element.value === null) {
@@ -362,12 +373,17 @@ export default function RichTranslationForm(props: Props) {
             value,
             [].concat(ePath, vPath),
             label,
+            attributeName,
             indent ? 'indented' : null,
             example,
         );
     }
 
-    function renderElements(elements: Array<PatternElement>, path: MessagePath, label: string) {
+    function renderElements(
+        elements: Array<PatternElement>,
+        path: MessagePath,
+        attributeName: ?string,
+    ) {
         let indent = false;
 
         return elements.map((element, eIndex) => {
@@ -387,6 +403,7 @@ export default function RichTranslationForm(props: Props) {
                         eIndex,
                         vIndex,
                         pluralExamples,
+                        attributeName,
                     );
                 });
 
@@ -394,6 +411,10 @@ export default function RichTranslationForm(props: Props) {
                 return variants;
             }
             else {
+                // When rendering Message attribute, set label to attribute name.
+                // When rendering Message value, set label to "Value".
+                const label = attributeName || 'Value';
+
                 indent = true;
                 if (typeof(element.value) !== 'string') {
                     return null;
@@ -408,19 +429,15 @@ export default function RichTranslationForm(props: Props) {
         });
     }
 
-    function renderValue(value: Pattern, path: MessagePath, label?: string) {
+    function renderValue(value: Pattern, path: MessagePath, attributeName?: string) {
         if (!value) {
             return null;
-        }
-
-        if (!label) {
-            label = 'Value';
         }
 
         return renderElements(
             value.elements,
             [].concat(path, [ 'elements' ]),
-            label,
+            attributeName,
         );
     }
 
