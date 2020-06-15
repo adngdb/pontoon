@@ -1,5 +1,4 @@
 import React from 'react';
-import { mount } from 'enzyme';
 
 import * as entities from 'core/entities';
 
@@ -11,10 +10,6 @@ import TranslationLength from './TranslationLength';
 import { createDefaultUser } from 'test/utils';
 import { createReduxStore, mountComponentWithStore } from 'test/store';
 
-
-const LOCALE = {
-    code: 'kg',
-}
 
 const SELECTED_ENTITY = {
     pk: 1,
@@ -43,13 +38,13 @@ function createEditorMenu({
 
     store.dispatch(entities.actions.receive([ entity ], false));
 
-    const comp = mountComponentWithStore(
+    const wrapper = mountComponentWithStore(
         EditorMenu,
         store,
         { firstItemHook },
     );
 
-    return [ comp, store ];
+    return wrapper;
 }
 
 
@@ -64,7 +59,7 @@ function expectHiddenSettingsAndActions(wrapper) {
 
 describe('<EditorMenu>', () => {
     it('renders correctly', () => {
-        const [ wrapper, store ] = createEditorMenu();
+        const wrapper = createEditorMenu();
 
         // 3 buttons to control the editor.
         expect(wrapper.find('.action-copy').exists()).toBeTruthy();
@@ -73,7 +68,7 @@ describe('<EditorMenu>', () => {
     });
 
     it('hides the settings and actions when the user is logged out', () => {
-        const [ wrapper, store ] = createEditorMenu({ isAuthenticated: false });
+        const wrapper = createEditorMenu({ isAuthenticated: false });
 
         expectHiddenSettingsAndActions(wrapper);
 
@@ -85,7 +80,7 @@ describe('<EditorMenu>', () => {
             ...SELECTED_ENTITY,
             readonly: true,
         }
-        const [ wrapper, store ] = createEditorMenu({ entity });
+        const wrapper = createEditorMenu({ entity });
 
         expectHiddenSettingsAndActions(wrapper);
 
@@ -94,7 +89,7 @@ describe('<EditorMenu>', () => {
 
     it('accepts a firstItemHook and shows it as its first child', () => {
         const firstItemHook = <p>Hello</p>;
-        const [ wrapper, store ] = createEditorMenu({ firstItemHook });
+        const wrapper = createEditorMenu({ firstItemHook });
 
         expect(wrapper.find('menu').children().first().text()).toEqual('Hello');
     });

@@ -1,5 +1,3 @@
-import React from 'react';
-import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
 import { createDefaultUser } from 'test/utils';
@@ -31,7 +29,7 @@ function createFailedChecks() {
 
 describe('<FailedChecks>', () => {
     it('does not render if no errors or warnings present', () => {
-        const [ wrapper, store ] = createFailedChecks();
+        const [ wrapper, ] = createFailedChecks();
 
         expect(wrapper.find('.failed-checks')).toHaveLength(0);
     });

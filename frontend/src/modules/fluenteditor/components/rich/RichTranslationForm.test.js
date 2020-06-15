@@ -1,9 +1,6 @@
-import React from 'react';
-import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
 
 import * as editor from 'core/editor';
-import * as entities from 'core/entities';
 import * as locale from 'core/locale';
 import { fluent } from 'core/utils';
 
@@ -42,7 +39,7 @@ function createComponent(entityString, updateTranslation) {
 
 describe('<RichTranslationForm>', () => {
     it('renders textarea for a value and each attribute', () => {
-        const [ wrapper, store ] = createComponent(
+        const [ wrapper, ] = createComponent(
 `message = Value
     .attr-1 = And
     .attr-2 = Attributes
@@ -56,7 +53,7 @@ describe('<RichTranslationForm>', () => {
     });
 
     it('renders select expression properly', () => {
-        const [ wrapper, store ] = createComponent(
+        const [ wrapper, ] = createComponent(
 `my-entry =
     { PLATFORM() ->
         [variant] Hello!
@@ -75,7 +72,7 @@ describe('<RichTranslationForm>', () => {
     });
 
     it('renders select expression in attributes properly', () => {
-        const [ wrapper, store ] = createComponent(
+        const [ wrapper, ] = createComponent(
 `my-entry =
     .label =
         { PLATFORM() ->
@@ -110,7 +107,7 @@ describe('<RichTranslationForm>', () => {
     });
 
     it('renders plural string properly', () => {
-        const [ wrapper, store ] = createComponent(
+        const [ wrapper, ] = createComponent(
 `my-entry =
     { $num ->
         [one] Hello!
@@ -135,7 +132,7 @@ describe('<RichTranslationForm>', () => {
     });
 
     it('renders access keys properly', () => {
-        const [ wrapper, store ] = createComponent(
+        const [ wrapper, ] = createComponent(
 `title = Title
     .label = Candidates
     .accesskey = C
@@ -164,7 +161,7 @@ describe('<RichTranslationForm>', () => {
     });
 
     it('does not render the access key UI if no candidates can be generated', () => {
-        const [ wrapper, store ] = createComponent(
+        const [ wrapper, ] = createComponent(
 `title =
     .label = { reference }
     .accesskey = C
@@ -175,7 +172,7 @@ describe('<RichTranslationForm>', () => {
     });
 
     it('does not render the access key UI if access key is longer than 1 character', () => {
-        const [ wrapper, store ] = createComponent(
+        const [ wrapper, ] = createComponent(
 `title =
     .label = Candidates
     .accesskey = { reference }
@@ -187,7 +184,7 @@ describe('<RichTranslationForm>', () => {
 
     it('updates the translation when selectionReplacementContent is passed', async () => {
         const updateMock = sinon.spy();
-        const [ wrapper, store ] = createComponent(
+        const [ , store ] = createComponent(
 `title = Value
     .label = Something
 `,

@@ -1,5 +1,3 @@
-import React from 'react';
-import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
 import * as user from 'core/user';
@@ -33,7 +31,7 @@ describe('<EditorMainAction>', () => {
         sinon.stub(user.selectors, 'isTranslator').returns(true);
         sinon.stub(editor.selectors, 'sameExistingTranslation').returns({ pk: 1 });
 
-        const [ wrapper, store ] = createComponent();
+        const [ wrapper, ] = createComponent();
 
         expect(wrapper.find('.action-approve')).toHaveLength(1);
         expect(wrapper.find('.action-suggest')).toHaveLength(0);
@@ -69,7 +67,7 @@ describe('<EditorMainAction>', () => {
     it('renders the Suggest button when user does not have permission', () => {
         sinon.stub(user.selectors, 'isTranslator').returns(false);
 
-        const [ wrapper, store ] = createComponent();
+        const [ wrapper, ] = createComponent();
 
         expect(wrapper.find('.action-suggest')).toHaveLength(1);
         expect(wrapper.find('.action-save')).toHaveLength(0);
@@ -101,7 +99,7 @@ describe('<EditorMainAction>', () => {
         sinon.stub(user.selectors, 'isTranslator').returns(true);
 
         const sendTranslationMock = sinon.spy();
-        const [ wrapper, store ] = createComponent(sendTranslationMock);
+        const [ wrapper, ] = createComponent(sendTranslationMock);
 
         expect(wrapper.find('.action-save')).toHaveLength(1);
         expect(wrapper.find('.action-suggest')).toHaveLength(0);

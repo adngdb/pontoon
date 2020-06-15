@@ -1,5 +1,4 @@
 import { Localized } from '@fluent/react';
-import { push } from 'connected-react-router';
 import { shallow } from 'enzyme';
 
 import * as user from 'core/user';

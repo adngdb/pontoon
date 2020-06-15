@@ -1,7 +1,3 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import sinon from 'sinon';
-
 import * as entities from 'core/entities';
 import * as navigation from 'core/navigation';
 
@@ -67,34 +63,34 @@ async function createComponent(entityIndex = 0) {
 
     wrapper.update();
 
-    return [ wrapper, store ];
+    return wrapper;
 }
 
 
 describe('<FluentEditor>', () => {
     it('renders the simple form when passing a simple string', async () => {
-        const [ wrapper, store ] = await createComponent(1);
+        const wrapper = await createComponent(1);
 
         expect(wrapper.find('SourceEditor').exists()).toBeFalsy();
         expect(wrapper.find('SimpleEditor').exists()).toBeTruthy();
     });
 
     it('renders the simple form when passing a simple string with one attribute', async () => {
-        const [ wrapper, store ] = await createComponent(2);
+        const wrapper = await createComponent(2);
 
         expect(wrapper.find('SourceEditor').exists()).toBeFalsy();
         expect(wrapper.find('SimpleEditor').exists()).toBeTruthy();
     });
 
     it('renders the source form when passing a complex string', async () => {
-        const [ wrapper, store ] = await createComponent(3);
+        const wrapper = await createComponent(3);
 
         expect(wrapper.find('SourceEditor').exists()).toBeTruthy();
         expect(wrapper.find('SimpleEditor').exists()).toBeFalsy();
     });
 
     it('converts translation when switching source mode', async () => {
-        const [ wrapper, store ] = await createComponent(1);
+        const wrapper = await createComponent(1);
         expect(wrapper.find('SimpleEditor').exists()).toBeTruthy();
 
         // Force source mode.
@@ -105,7 +101,7 @@ describe('<FluentEditor>', () => {
     });
 
     it('sets empty initial translation in source mode when untranslated', async () => {
-        const [ wrapper, store ] = await createComponent(4);
+        const wrapper = await createComponent(4);
 
         // Force source mode.
         wrapper.find('button.ftl').simulate('click');
